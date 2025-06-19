@@ -10,7 +10,7 @@ class deckModel(Base):
     creator_user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     title: Mapped[str]
     theme: Mapped[str]
-    description: Mapped[bool]
+    description: Mapped[str]
     created_at: Mapped[str]  
     updated_at: Mapped[str]
     is_public: Mapped[bool]
