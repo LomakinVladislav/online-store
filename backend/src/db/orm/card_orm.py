@@ -1,8 +1,8 @@
 # Файл с описанием функций (методов) для создания запросов и команд базе данных
 from sqlalchemy.orm import Session
 
-from db.models.card_model import cardModel
-from db.schemas.card_shemas import CardAddSchema
+from src.db.models.card_model import cardModel
+from src.db.schemas.card_shemas import CardAddSchema
 
 async def add_card(data: CardAddSchema, session: Session):
     new_card = cardModel( 

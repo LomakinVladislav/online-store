@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.base import api_router
+from src.api.base import api_router
+
 
 origins = [
     "http://localhost.tiangolo.com",

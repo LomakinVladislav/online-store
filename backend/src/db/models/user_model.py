@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, relationship
-from db.database import Base, intpk
+from src.db.database import Base, intpk
 
 
 class userModel(Base):

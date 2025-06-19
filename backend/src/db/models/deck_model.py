@@ -1,6 +1,6 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, relationship, mapped_column
-from db.database import Base, intpk
+from src.db.database import Base, intpk
 
 
 class deckModel(Base):
@@ -10,7 +10,7 @@ class deckModel(Base):
     creator_user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     title: Mapped[str]
     theme: Mapped[str]
-    description: Mapped[str]
+    description: Mapped[bool]
     created_at: Mapped[str]  
     updated_at: Mapped[str]
     is_public: Mapped[bool]

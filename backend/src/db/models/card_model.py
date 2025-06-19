@@ -1,6 +1,6 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, relationship, mapped_column
-from db.database import Base, intpk
+from src.db.database import Base, intpk
 
 
 class cardModel(Base):
