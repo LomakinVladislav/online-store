@@ -1,0 +1,19 @@
+.main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.main-content {
+    display: flex;
+    padding: 1em;
+    width: 100%;
+    gap: 1em;
+    overflow: auto;
+}
+
+.header {
+    position: sticky;
+    display: flex;
+}
