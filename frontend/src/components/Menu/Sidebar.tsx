@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   AppstoreOutlined,
-  DesktopOutlined,
+  HomeOutlined,
   MailOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -9,13 +9,13 @@ import {
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Menu } from 'antd';
-import "./Menu.css";
+import styles from "./Menu.module.css"
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 const items: MenuItem[] = [
-  { key: '1', icon: <DesktopOutlined />, label: 'Главная' },
-  { key: '3', icon: <FolderOpenOutlined />, label: 'Ваша библиотека' },
+  { key: '1', icon: <HomeOutlined />, label: 'Главная' },
+  { key: '2', icon: <FolderOpenOutlined />, label: 'Ваша библиотека' },
   {
     key: 'sub1',
     label: 'Navigation One',
@@ -46,7 +46,7 @@ const items: MenuItem[] = [
   },
 ];
 
-const App: React.FC = () => {
+const MenuComponent: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   const toggleCollapsed = () => {
@@ -70,4 +70,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default MenuComponent;

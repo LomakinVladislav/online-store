@@ -1,14 +1,27 @@
 import React from 'react';
-import { Layout, Menu} from 'antd';
+import { Layout, Menu, ConfigProvider, Switch, MenuProps} from 'antd';
+import {
+  UserOutlined,
+  PlusCircleOutlined
+} from '@ant-design/icons';
+import styles from "./Header.module.css"
+
+
+type HeaderProps = {
+  isDarkMode: boolean;
+  toggleTheme: () => void;
+};
+
 
 const { Header} = Layout;
 
-const items = Array.from({ length: 3 }).map((_, index) => ({
-  key: String(index + 1),
-  label: `nav ${index + 1}`,
-}));
+type MenuItem = Required<MenuProps>['items'][number];
 
-const App: React.FC = () => {
+const items: MenuItem[] = [
+  { key: '1', icon: <UserOutlined />, label: 'Профиль' },
+  { key: '2', icon: <PlusCircleOutlined />, label: 'Создать' },
+]
+const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
   return (
       <Header
         style={{
@@ -18,18 +31,26 @@ const App: React.FC = () => {
           width: '100%',
           display: 'flex',
           alignItems: 'center',
+          padding: 0, // Без этого свойства с width: 100% элемент не помещается в рамки родителя
         }}
       >
+      <ConfigProvider theme={{}}>
+      <Switch
+        checked={isDarkMode}
+        onChange={toggleTheme}
+        checkedChildren="🌙"
+        unCheckedChildren="☀️"
+      /> 
+      </ConfigProvider>
         <div className="demo-logo" />
         <Menu
-          theme="dark"
           mode="horizontal"
-          defaultSelectedKeys={['2']}
+          defaultSelectedKeys={['1']}
           items={items}
-          style={{ flex: 1, minWidth: 0 }}
+          style={{ flex: 1, flexDirection: `row-reverse` , minWidth: 0}}
         />
       </Header>
   );
 };
 
-export default App;
+export default HeaderComponent;

@@ -1,18 +1,10 @@
 import React from "react";
-import "./Card.css";
+import styles from "./Card.module.css";
+import { Card} from 'antd';
 
-export class Card extends React.Component {
-  cardName = 'Имя колоды'
-  price = '0.00'
-
-  render() {
-    return (
-      <div className="card-container">
-        <div className="card-price">{this.price}</div>
-        <div className="card-name">{this.cardName}</div>
-      </div>
-    )
-  }
-}
-
-export default Card;
+const CardComponent: React.FC = () => (
+  <Card title="Card title" variant="borderless" style={{height: 200, width: 200}}>
+        Card content
+  </Card> 
+);
+export default CardComponent;
