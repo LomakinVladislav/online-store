@@ -7,15 +7,7 @@ class Content extends React.Component {
     return (
       <div className={styles[`content-container`]}>
         <Card/> 
-        <Card/>
-        <Card/>
-        <Card/>
-        <Card/>
-        <Card/>
-        <Card/>
-        <Card/>
-        <Card/>
-        <Card/>
+
       </div>
     )
   }
