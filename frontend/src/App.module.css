@@ -1,23 +1,4 @@
-:root {
-  font-family: "Avenir", GadGet, sans-serif;
-  --yellow-gradient: linear-gradient(to right, #ffbc3b, #ffcf7b);
-  --orange-gradient: linear-gradient(to right, #FF864C, #F2A276);
-  --violet-gradient: linear-gradient(to right, #9E6AFF, #C7ACFB);
-  --purpure-gradient: linear-gradient(to right, #8D70EE, #4D9FCA);
-  --red-gradient: linear-gradient(to right, #E4334D, #E4687A);
-  --gray: #e0e0e0;
-  --dark-gray: #616161;
-}
-
-
 html, body {
   height: 100%; 
   margin: 0;
-}
-
-
-.app-window {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
 }

@@ -1,32 +1,30 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Layout } from 'antd';
 import styles from './Layout.module.css'
 import Header from '../../components/Header/Header';
-import Content from '../../components/Content/Content';
-import SideBar from '../../components/Menu/Sidebar';
+import SideBar from '../../components/Sidebar/Sidebar';
 
-type LayoutProps = {
+interface LayoutComponentProps {
+  children?: ReactNode; 
   isDarkMode: boolean;
   toggleTheme: () => void;
-};
+}
 
-const LayoutComponent = ({ isDarkMode, toggleTheme }: LayoutProps) => {
+
+const LayoutComponent: React.FC<LayoutComponentProps> = ({ children, isDarkMode, toggleTheme }) => {
   return (
-  <Layout style={{ height: "100vh" }}>
-  <div className={styles[`main-container`]}>
-    <header>
-      <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-    </header>
-    <div className={styles[`main-content`]}>
-      <aside>
-        <SideBar />
-      </aside>
-      <main>
-        <Content /> 
-      </main>
+    <div className={styles[`app-window`]}>
+      <Layout style={{ height: "100vh" }}>
+        <div className={styles[`main-container`]}>
+          <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+          <div className={styles[`main-content`]}>
+            <SideBar />
+            {children}  
+          </div>
+        </div>
+      </Layout>
     </div>
-  </div>
-  </Layout>
-)}
+  );
+};
 
 export default LayoutComponent;

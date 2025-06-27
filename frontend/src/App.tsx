@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import styles from './App.module.css';
-import Layout from './pages/Layout/Layout';
-import { App, ConfigProvider} from 'antd';
+import './App.module.css';
+import { App, ConfigProvider, Layout} from 'antd';
+import LayoutComponent from './pages/Layout/Layout';
 import { lightThemeConfig, darkThemeConfig } from './styles/theme';
-
+import Content from './components/Content/Content';
 
 
 const AppComponent: React.FC = () => {
@@ -16,9 +16,9 @@ const AppComponent: React.FC = () => {
   return (
       <ConfigProvider theme={isDarkMode ? darkThemeConfig : lightThemeConfig}>
         <App> 
-          <div className={styles[`app-window`]}>
-            <Layout isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>  
-          </div>
+          <LayoutComponent isDarkMode={isDarkMode} toggleTheme={toggleTheme} >
+            <Content /> 
+          </LayoutComponent>  
         </App>
       </ConfigProvider>
 )};
