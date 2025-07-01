@@ -10,6 +10,7 @@ import {
 import type { MenuProps } from 'antd';
 import { Button, Menu } from 'antd';
 import styles from "./Menu.module.css"
+import { useNavigate } from 'react-router-dom';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -46,11 +47,18 @@ const items: MenuItem[] = [
   },
 ];
 
-const MenuComponent: React.FC = () => {
+const SidebarComponent: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
+  };
+
+  const handleSidebarClick: MenuProps['onClick'] = (e) => {
+    if (e.key === '1') { 
+      navigate('/main');
+    }
   };
 
   return (
@@ -65,9 +73,10 @@ const MenuComponent: React.FC = () => {
         theme="light"
         inlineCollapsed={collapsed}
         items={items}
+        onClick={handleSidebarClick}
       />
     </div>
   );
 };
 
-export default MenuComponent;
+export default SidebarComponent;
