@@ -1,11 +1,11 @@
 import React, { ReactNode } from 'react';
 import { Layout } from 'antd';
 import styles from './Layout.module.css'
-import Header from '../../components/Header/Header';
-import SideBar from '../../components/Sidebar/Sidebar';
+import Header from '../Header/Header';
+import SideBar from '../Sidebar/Sidebar';
 
 interface LayoutComponentProps {
-  children?: ReactNode; 
+  children?: ReactNode;
   isDarkMode: boolean;
   toggleTheme: () => void;
 }
@@ -19,7 +19,7 @@ const LayoutComponent: React.FC<LayoutComponentProps> = ({ children, isDarkMode,
           <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
           <div className={styles[`main-content`]}>
             <SideBar />
-            {children}  
+            {children}
           </div>
         </div>
       </Layout>

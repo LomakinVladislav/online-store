@@ -4,7 +4,6 @@ import {
   UserOutlined,
   PlusCircleOutlined
 } from '@ant-design/icons';
-import styles from "./Header.module.css"
 
 
 type HeaderProps = {
