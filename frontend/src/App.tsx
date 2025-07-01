@@ -3,7 +3,7 @@ import './App.module.css';
 import { App, ConfigProvider } from 'antd';
 import LayoutComponent from './components/Layout/Layout';
 import { lightThemeConfig, darkThemeConfig } from './styles/theme';
-import Content from './components/DeckContent/DeckContent';
+import DeckContent from './components/DeckContent/DeckContent';
 import Main from './pages/Main/Main'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -28,7 +28,7 @@ const AppComponent: React.FC = () => {
               {/* <Route path="/newdeck" element={} /> */}
               (<Route path="/" element={<Navigate to="/main" />} />)
               <Route path="/main" element={<Main />} />
-              <Route path="/content" element={<Content />} />
+              <Route path="/content" element={<DeckContent />} />
             </Routes>
           </LayoutComponent>
         </App>

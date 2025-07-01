@@ -3,6 +3,8 @@ import styles from "./Card.module.css";
 import { Card} from 'antd';
 import axios from "axios";
 
+const { Meta } = Card;
+
 interface ICardData {
   id: number;
   deck_id: number;
@@ -41,9 +43,11 @@ const CardComponent: React.FC = () => {
         <Card 
           title={cards[1].title} 
           variant="borderless" 
-          style={{ height: 200, width: 200 }}
+          style={{ width: 240 }}
+          cover={<img alt="example" src="https://www.tursar.ru/image/img2535_0.jpg" />}
         >
-          Card content
+              <Meta title="The jerboa [ʤɜːˈbəʊə]" description="Тушканчик" />
+
         </Card>
       ) : (
         <div>Loading cards...</div>
