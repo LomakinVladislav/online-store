@@ -3,26 +3,27 @@ import styles from "./Card.module.css";
 import { Card} from 'antd';
 import axios from "axios";
 
-interface CardData {
+interface ICardData {
   id: number;
   deck_id: number;
   front_text: string;
   back_text: string;
 }
 
-interface CardItem {
+interface ICardItem {
   title: string;
   key: number;
 }
+
 const CardComponent: React.FC = () => {
-  const [cards, setCards] = useState<CardItem[]>([]);
+  const [cards, setCards] = useState<ICardItem[]>([]);
 
   const fetchCards = async () => {
     try {
-      const response = await axios.get<CardData[]>('http://127.0.0.1:8000/card');
-      const cardsInfo = response.data.map((c: CardData) => ({
-        title: c.front_text,
-        key: c.id,
+      const response = await axios.get<ICardData[]>('http://127.0.0.1:8000/card');
+      const cardsInfo = response.data.map((card: ICardData) => ({
+        title: card.front_text,
+        key: card.id,
       }));
       setCards(cardsInfo);
     } catch (error) {
