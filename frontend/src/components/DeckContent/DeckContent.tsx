@@ -1,7 +1,7 @@
   import React, { useEffect, useState } from "react";
   import CardComponent from "../Card/Card";
   import styles from "./DeckContent.module.css"
-  import { Card, List } from 'antd';
+  import { Card, Carousel, List } from 'antd';
   import axios from "axios";
 
 
@@ -20,6 +20,11 @@
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [flipped, setFlipped] = useState<boolean>(false);
+    
+    useEffect(() => {
+      fetchCards();
+    }, []);
+
 
     const fetchCards = async () => {
       try {
@@ -34,9 +39,21 @@
       }
     };
 
-    useEffect(() => {
-      fetchCards();
-    }, []);
+    const contentStyle: React.CSSProperties = {
+      height: '160px',
+      color: '#fff',
+      lineHeight: '160px',
+      textAlign: 'center', // теперь это конкретное значение
+      background: '#364d79',
+      borderRadius: '8px',
+    };
+
+    const containerStyle = {
+      width: '100%',
+      maxWidth: '1200px', // Ограничиваем максимальную ширину
+      margin: '0 auto', // Центрирование
+      padding: '20px',
+    };  
 
     if (loading) return <div className={styles.loading}>Загрузка карточек...</div>;
     if (error) return <div className={styles.error}>{error}</div>;
@@ -44,26 +61,23 @@
 
     return (
       <div >
-        <List
-          grid={{ gutter: 16, column: 4 }}
-          dataSource={cards}
-          renderItem={(card) => (
-            <List.Item>
-              <Card
-                onClick={() => setFlipped(!flipped)}
-                hoverable
-                style={{ width: 240 }}
-                cover={<img alt="card" src="https://www.tursar.ru/image/img2535_0.jpg" />}
-              >
-                {flipped ? (
-                  <Meta title={card.back_text} />
-                ) : (
-                  <Meta title={card.front_text} />
-                )}
-              </Card>
-            </List.Item>
-          )}
-        />
+        <div style={containerStyle}>
+      <h2>Вы вошли в колоду карт, здесь собран тематический набор</h2>
+      <Carousel arrows autoplay>
+        <div>
+          <h3 style={contentStyle}>Слайд 1</h3>
+        </div>
+        <div>
+          <h3 style={contentStyle}>Слайд 2</h3>
+        </div>
+        <div>
+          <h3 style={contentStyle}>Слайд 3</h3>
+        </div>
+        <div>
+          <h3 style={contentStyle}>Слайд 4</h3>
+        </div>
+      </Carousel>
+    </div>
       </div>
     )
   }
