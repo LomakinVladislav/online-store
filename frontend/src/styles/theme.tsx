@@ -11,7 +11,7 @@ export const lightThemeConfig: ThemeConfig = {
   },
   components: {
     Button: {
-      colorPrimaryHover: '#40a9ff',
+      colorPrimaryHover: '#a886fc',
     },
     Card: {
       colorBgContainer: '#b699ff'
