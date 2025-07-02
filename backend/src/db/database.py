@@ -10,6 +10,8 @@ async_engine = create_async_engine(
     echo=True,
 )
 
+print("Настройки подключения к базе: " + settings.DATABASE_URL_asyncpg)
+
 async_session_factory = async_sessionmaker(async_engine)
 
 async def get_session():
