@@ -20,11 +20,13 @@
     flex-direction: column;
     align-items: center;
     flex: 1;
+    width: 240;
+    height: 240;
 }
   
 .card {
     width: 100%;
-    max-width: 500px;
+    max-width: 400px;
     min-height: 300px;
     transition: transform 0.3s;
     cursor: pointer;

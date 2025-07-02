@@ -15,6 +15,7 @@ interface IDeckData {
   updated_at: string;
   is_public: boolean;
   difficulty: string;
+  image_url: string;
 }
 
 
@@ -57,7 +58,7 @@ const Main: React.FC = () => {
             <Card
               hoverable
               style={{ width: 240 }}
-              cover={<img alt="card" src="https://www.tursar.ru/image/img2535_0.jpg" />}
+              cover={<img alt="card" src={deck.image_url}  />}
               onClick={handleClick}
             >
               <Meta 

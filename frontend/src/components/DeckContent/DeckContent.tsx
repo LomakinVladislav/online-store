@@ -12,6 +12,8 @@
     deck_id: number;
     front_text: string;
     back_text: string;
+    transcription: string;
+    image_url: string;
   }
 
 
@@ -78,7 +80,7 @@
 
     const currentCard = cards[currentCardIndex];
 
-    
+
     return (
       <div className={styles.container}>
         <div className={styles.navigationContainer}>
@@ -92,14 +94,14 @@
           <div className={styles.cardContainer}>
             <Card
               onClick={handleFlip}
-              hoverable
               className={styles.card}
-              cover={<img alt="card" src="https://www.tursar.ru/image/img2535_0.jpg" />}
+
+              cover={<img alt="card" src={currentCard.image_url} width={300} height={300} />}
             >
               {flipped ? (
-                <Meta title="Ответ" description={currentCard.back_text} />
+                <Meta title={currentCard.back_text} description={currentCard.transcription} />
               ) : (
-                <Meta title="Вопрос" description={currentCard.front_text} />
+                <Meta title={currentCard.front_text} />
               )}
             </Card>
             
