@@ -10,5 +10,7 @@ class cardModel(Base):
     deck_id: Mapped[int] = mapped_column(ForeignKey("deck.id"))
     front_text: Mapped[str]
     back_text: Mapped[str]
+    transcription: Mapped[str]
+    image_url: Mapped[str]
 
     deck = relationship("deckModel", back_populates="card")

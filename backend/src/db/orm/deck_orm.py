@@ -12,6 +12,7 @@ async def add_deck(data: DeckAddSchema, session: Session):
         title=data.title,
         theme=data.theme,
         description=data.description,
+        image_url=data.image_url,
         created_at=data.created_at,  # Можно генерировать автоматически (datetime.now())
         updated_at=data.updated_at,
         is_public=data.is_public,

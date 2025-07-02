@@ -7,10 +7,12 @@ from src.db.schemas.card_shemas import CardAddSchema, CardSchema
 
 async def add_card(data: CardAddSchema, session: Session):
     new_card = cardModel( 
-        id = data.id,
-        deck_id = data.deck_id,
-        front_text = data.front_text,
-        back_text = data.back_text
+        id=data.id,
+        deck_id=data.deck_id,
+        front_text=data.front_text,
+        back_text=data.back_text,
+        transcription=data.transcription,
+        image_url=data.image_url,
     )
     session.add(new_card)
     await session.commit()

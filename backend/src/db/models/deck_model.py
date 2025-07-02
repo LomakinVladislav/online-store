@@ -11,6 +11,7 @@ class deckModel(Base):
     title: Mapped[str]
     theme: Mapped[str]
     description: Mapped[str]
+    image_url: Mapped[str]
     created_at: Mapped[str]  
     updated_at: Mapped[str]
     is_public: Mapped[bool]
