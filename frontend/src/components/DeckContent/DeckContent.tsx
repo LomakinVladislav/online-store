@@ -96,7 +96,12 @@
               onClick={handleFlip}
               className={styles.card}
 
-              cover={<img alt="card" src={currentCard.image_url} width={300} height={300} />}
+              cover={
+                <img 
+                  alt="card" 
+                  src={currentCard.image_url} 
+                  className={`${styles.cardImage} ${flipped ? styles.flippedImage : ''}`}
+                />}
             >
               {flipped ? (
                 <Meta title={currentCard.back_text} description={currentCard.transcription} />
