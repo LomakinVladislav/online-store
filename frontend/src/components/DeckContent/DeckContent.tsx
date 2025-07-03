@@ -44,7 +44,7 @@
     const fetchCards = async () => {
       try {
         setLoading(true);
-        const response = await axios.get<ICardData[]>('http://127.0.0.1:8000/card');
+        const response = await axios.get<ICardData[]>('http://127.0.0.1:8000/cards');
         setCards(response.data);
         setCurrentCardIndex(0);
       } catch (error) {

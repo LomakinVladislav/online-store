@@ -26,7 +26,7 @@ const AppComponent: React.FC = () => {
               {/* <Route path="/search" element={} /> */}
               {/* <Route path="/library" element={} /> */}
               {/* <Route path="/newdeck" element={} /> */}
-              (<Route path="/" element={<Navigate to="/main" />} />)
+              (<Route path="*" element={<Navigate to="/main" />} />)
               <Route path="/main" element={<Main />} />
               <Route path="/content" element={<DeckContent />} />
             </Routes>

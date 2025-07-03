@@ -22,7 +22,7 @@ const CardComponent: React.FC = () => {
 
   const fetchCards = async () => {
     try {
-      const response = await axios.get<ICardData[]>('http://127.0.0.1:8000/card');
+      const response = await axios.get<ICardData[]>('http://127.0.0.1:8000/cards');
       const cardsInfo = response.data.map((card: ICardData) => ({
         title: card.front_text,
         key: card.id,
