@@ -2,8 +2,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
-from src.db.models.deck_model import deckModel
-from src.db.schemas.deck_schemas import DeckAddSchema
+from db.models.deck_model import deckModel
+from db.schemas.deck_schemas import DeckAddSchema
 
 async def add_deck(data: DeckAddSchema, session: Session):
     new_deck = deckModel(

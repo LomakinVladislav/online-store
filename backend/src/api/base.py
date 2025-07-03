@@ -1,9 +1,9 @@
 from fastapi import APIRouter
-from src.api.v1 import common_route
-from src.api.v1 import card_route
-from src.api.v1 import deck_route
-from src.api.v1 import user_route
-from src.api.v1 import userdeck_route
+from api.v1 import common_route
+from api.v1 import card_route
+from api.v1 import deck_route
+from api.v1 import user_route
+from api.v1 import userdeck_route
 
 
 api_router = APIRouter()

@@ -2,8 +2,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
-from src.db.models.card_model import cardModel
-from src.db.schemas.card_shemas import CardAddSchema, CardSchema
+from db.models.card_model import cardModel
+from db.schemas.card_shemas import CardAddSchema, CardSchema
 
 async def add_card(data: CardAddSchema, session: Session):
     new_card = cardModel( 

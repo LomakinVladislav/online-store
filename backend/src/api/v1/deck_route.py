@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
-from src.db.orm.deck_orm import add_deck, get_deck
-from src.db.schemas.deck_schemas import DeckAddSchema
+from db.orm.deck_orm import add_deck, get_deck
+from db.schemas.deck_schemas import DeckAddSchema
 
-from src.api.v1.common_route import SessionDep
+from api.v1.common_route import SessionDep
 
 router = APIRouter()
 

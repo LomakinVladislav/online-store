@@ -1,7 +1,7 @@
 import os
 import sys
 sys.path.insert(1,os.path.join(r'd:\Study\Selfeducation\E-soft\foreign-language-trainer\backend'))
-from src.config import settings
+from config import settings
 
 from logging.config import fileConfig
 
@@ -10,8 +10,8 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.db.models import user_model, deck_model, userdeck_model, card_model
-from src.db.database import Base
+from db.models import user_model, deck_model, userdeck_model, card_model
+from db.database import Base
 
 config = context.config
 

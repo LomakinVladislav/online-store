@@ -1,8 +1,8 @@
 # Файл с описанием функций (методов) для создания запросов и команд базе данных
 from sqlalchemy.orm import Session
 
-from src.db.models.userdeck_model import userdeckModel
-from src.db.schemas.userdeck_shemas import UserDeckAddSchema
+from db.models.userdeck_model import userdeckModel
+from db.schemas.userdeck_shemas import UserDeckAddSchema
 
 async def add_userdeck(data: UserDeckAddSchema, session: Session):
     new_userdeck = userdeckModel(

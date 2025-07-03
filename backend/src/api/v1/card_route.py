@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
-from src.db.orm.card_orm import add_card, get_card
-from src.db.schemas.card_shemas import CardAddSchema
+from db.orm.card_orm import add_card, get_card
+from db.schemas.card_shemas import CardAddSchema
 
-from src.api.v1.common_route import SessionDep
+from api.v1.common_route import SessionDep
 
 router = APIRouter()
 
