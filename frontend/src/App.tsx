@@ -8,7 +8,10 @@ import Main from './pages/Main/Main'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 const AppComponent: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme === 'true'; 
+  });
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
