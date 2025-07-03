@@ -1,9 +1,8 @@
 import React from 'react';
+import { lightThemeConfig, darkThemeConfig } from '../../styles/theme';
 import { Layout, Menu, ConfigProvider, Switch, MenuProps} from 'antd';
-import {
-  UserOutlined,
-  PlusCircleOutlined
-} from '@ant-design/icons';
+import { UserOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import styles from './Header.module.css'
 
 
 type HeaderProps = {
@@ -33,14 +32,16 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
           padding: 0, // Без этого свойства с width: 100% элемент не помещается в рамки родителя
         }}
       >
-      <ConfigProvider theme={{}}>
-      <Switch
-        checked={isDarkMode}
-        onChange={toggleTheme}
-        checkedChildren="🌙"
-        unCheckedChildren="☀️"
-      /> 
-      </ConfigProvider>
+      <div className={`${styles.switchContainer} ${
+        isDarkMode ? styles.switchContainerDark : styles.switchContainerLight
+      }`}>
+        <Switch
+          checked={isDarkMode}
+          onChange={toggleTheme}
+          checkedChildren="🌙"
+          unCheckedChildren="☀️"
+        /> 
+      </div>
         <div className="demo-logo" />
         <Menu
           mode="horizontal"

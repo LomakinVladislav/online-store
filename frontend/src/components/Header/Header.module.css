@@ -1,0 +1,14 @@
+.switchContainer {
+    margin-bottom: 1px;
+    padding-left: 5px;
+  }
+  
+.switchContainerDark {
+    background: #2e2e2e;
+    border-bottom: 1px solid #f6f6f624;
+}
+  
+.switchContainerLight {
+    background: #ffffff;
+    border-bottom: 1px solid #0505050f;
+}
