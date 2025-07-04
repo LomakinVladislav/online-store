@@ -31,7 +31,7 @@ const AppComponent: React.FC = () => {
               {/* <Route path="/newdeck" element={} /> */}
               (<Route path="*" element={<Navigate to="/main" />} />)
               <Route path="/main" element={<Main />} />
-              <Route path="/content" element={<DeckContent />} />
+              <Route path="/decks/:deckId/content" element={<DeckContent />} />
             </Routes>
           </LayoutComponent>
         </App>

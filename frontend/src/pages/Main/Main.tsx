@@ -38,14 +38,12 @@ const Main: React.FC = () => {
       }
     };
 
+
   useEffect(() => {
     fetchDecks();
   }, []);
 
-  const handleClick = () => {
-    navigate("/content");
-  }
-
+  
   return (
     <div >
       <div>
@@ -59,7 +57,7 @@ const Main: React.FC = () => {
               hoverable
               style={{ width: 240 }}
               cover={<img alt="card" src={deck.image_url}  />}
-              onClick={handleClick}
+              onClick={() => navigate(`/decks/${deck.id}/content`)}
             >
               <Meta 
                 title={deck.title} 
@@ -70,7 +68,7 @@ const Main: React.FC = () => {
         )}
       />
       ) : (
-        <div>Loading decks...</div>
+        <div>Загрузка наборов...</div>
       )}
       </div>  
     </div>

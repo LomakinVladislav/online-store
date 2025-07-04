@@ -1,4 +1,5 @@
   import React, { useEffect, useState } from "react";
+  import { useParams } from 'react-router-dom';
   import styles from "./DeckContent.module.css"
   import { Card, Button } from 'antd';
   import { LeftOutlined, RightOutlined } from '@ant-design/icons';
@@ -18,6 +19,7 @@
 
 
   const DeckContent: React.FC = () => {
+    const { deckId } = useParams<{ deckId: string }>();
     const [cards, setCards] = useState<ICardData[]>([]);
     const [currentCardIndex, setCurrentCardIndex] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
@@ -25,8 +27,10 @@
     const [flipped, setFlipped] = useState<boolean>(false);
     
     useEffect(() => {
-      fetchCards();
-    }, []);
+      if (deckId) {
+        fetchCards(deckId);
+      }
+    }, [deckId]);
 
     // Навигация с клавиатуры
     useEffect(() => {
@@ -41,12 +45,13 @@
     }, [currentCardIndex, flipped]);
 
 
-    const fetchCards = async () => {
+    const fetchCards = async (deckId: string) => {
       try {
         setLoading(true);
-        const response = await axios.get<ICardData[]>('http://127.0.0.1:8000/cards');
+        const response = await axios.get<ICardData[]>(`http://127.0.0.1:8000/decks/${deckId}/cards`);
         setCards(response.data);
         setCurrentCardIndex(0);
+        setFlipped(false);
       } catch (error) {
         console.error('Error fetching cards:', error);
         setError('Не удалось загрузить карточки');
@@ -95,7 +100,6 @@
             <Card
               onClick={handleFlip}
               className={styles.card}
-
               cover={
                 <img 
                   alt="card" 
