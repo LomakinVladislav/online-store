@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from db.models.deck_model import deckModel
+from db.models.card_model import cardModel
 from db.schemas.deck_schemas import DeckAddSchema
 
 async def add_deck(data: DeckAddSchema, session: Session):
@@ -23,7 +24,13 @@ async def add_deck(data: DeckAddSchema, session: Session):
     return {"ok": True}
 
 
-async def get_deck(session: Session):
+async def get_decks(session: Session):
     query = select(deckModel)
+    result = await session.execute(query)
+    return result.scalars().all()
+
+
+async def get_deck_by_id(deck_id: int, session: Session):
+    query = (select(cardModel).where(cardModel.deck_id == deck_id))
     result = await session.execute(query)
     return result.scalars().all()
