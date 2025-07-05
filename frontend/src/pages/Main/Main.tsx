@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, List } from 'antd';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import styles from './Main.module.css'
 
 const { Meta } = Card;
 
@@ -45,18 +46,35 @@ const Main: React.FC = () => {
 
   
   return (
-    <div >
-      <div>
-      {decks.length > 0 ? (
-        <List
-        grid={{ gutter: 16, column: 4 }}
+    <div className={styles.mainContainer}>
+    {loading ? (
+      <div>Загрузка наборов...</div>
+    ) : error ? (
+      <div className={styles.error}>{error}</div>
+    ) : decks.length > 0 ? (
+      <List
+        grid={{
+          gutter: 16,
+          xs: 1,   
+          sm: 2,   
+          md: 3,   
+          lg: 4,   
+          xl: 4,   
+          xxl: 4
+        }}
         dataSource={decks}
         renderItem={(deck) => (
           <List.Item>
             <Card
               hoverable
-              style={{ width: 240 }}
-              cover={<img alt="card" src={deck.image_url}  />}
+              className={styles.deckCard}
+              cover={
+                <img 
+                  alt={deck.title} 
+                  src={deck.image_url} 
+                  className={styles.cardImage}
+                />
+              }
               onClick={() => navigate(`/decks/${deck.id}/content`)}
             >
               <Meta 
@@ -67,11 +85,10 @@ const Main: React.FC = () => {
           </List.Item>
         )}
       />
-      ) : (
-        <div>Загрузка наборов...</div>
-      )}
-      </div>  
-    </div>
+    ) : (
+      <div>Нет доступных колод</div>
+    )}
+  </div>
     )
 }
 
