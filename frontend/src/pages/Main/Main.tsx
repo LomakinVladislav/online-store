@@ -3,6 +3,7 @@ import { Card, List } from 'antd';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from './Main.module.css'
+import { useMenuContext  } from '../../contexts/MenuContext';
 
 const { Meta } = Card;
 
@@ -21,10 +22,15 @@ interface IDeckData {
 
 
 const Main: React.FC = () => {
+  const { setSelectedMenuKey } = useMenuContext();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [decks, setDecks] = useState<IDeckData[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchDecks();
+  }, []);
 
   const fetchDecks = async () => {
       try {
@@ -37,14 +43,13 @@ const Main: React.FC = () => {
       } finally {
         setLoading(false);
       }
-    };
+    };  
 
+  const handleCardClick = (deckId: number) => {
+    setSelectedMenuKey([]);
+    navigate(`/decks/${deckId}/content`);
+  };
 
-  useEffect(() => {
-    fetchDecks();
-  }, []);
-
-  
   return (
     <div className={styles.mainContainer}>
     {loading ? (
@@ -53,15 +58,7 @@ const Main: React.FC = () => {
       <div className={styles.error}>{error}</div>
     ) : decks.length > 0 ? (
       <List
-        grid={{
-          gutter: 16,
-          xs: 1,   
-          sm: 2,   
-          md: 3,   
-          lg: 4,   
-          xl: 4,   
-          xxl: 4
-        }}
+      grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 4, xxl: 4 }}
         dataSource={decks}
         renderItem={(deck) => (
           <List.Item>
@@ -75,7 +72,7 @@ const Main: React.FC = () => {
                   className={styles.cardImage}
                 />
               }
-              onClick={() => navigate(`/decks/${deck.id}/content`)}
+              onClick={() => handleCardClick(deck.id)}
             >
               <Meta 
                 title={deck.title} 
