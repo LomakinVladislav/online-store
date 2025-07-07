@@ -4,7 +4,7 @@ from db.database import Base, intpk
 
 
 class deckModel(Base):
-    __tablename__ = "deck"  
+    __tablename__ = "decks"  
 
     id: Mapped[intpk]
     creator_user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))

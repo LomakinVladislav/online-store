@@ -4,7 +4,7 @@ from db.database import Base, intpk
 
 
 class cardModel(Base):
-    __tablename__ = "card"
+    __tablename__ = "cards"
 
     id: Mapped[intpk]
     deck_id: Mapped[int] = mapped_column(ForeignKey("deck.id"))
