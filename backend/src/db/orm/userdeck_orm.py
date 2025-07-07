@@ -6,7 +6,6 @@ from db.schemas.userdeck_shemas import UserDeckAddSchema
 
 async def add_userdeck(data: UserDeckAddSchema, session: Session):
     new_userdeck = userdeckModel(
-        id = data.id,
         user_id=data.user_id,
         deck_id=data.deck_id,
         added_at=data.added_at, 

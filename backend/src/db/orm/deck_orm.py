@@ -8,7 +8,6 @@ from db.schemas.deck_schemas import DeckAddSchema
 
 async def add_deck(data: DeckAddSchema, session: Session):
     new_deck = deckModel(
-        id=data.id,
         creator_user_id=data.creator_user_id,
         title=data.title,
         theme=data.theme,

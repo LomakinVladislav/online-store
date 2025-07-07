@@ -6,10 +6,11 @@ from db.schemas.user_schemas import UserAddSchema
 
 async def add_user(data: UserAddSchema, session: Session):
     new_user = userModel(
-        id = data.id,
         username = data.username,
         email = data.email,
-        password = data.password
+        hashed_password = data.hashed_password,
+        full_name = data.full_name,
+        disabled = data.disabled
     )
     session.add(new_user)
     await session.commit()

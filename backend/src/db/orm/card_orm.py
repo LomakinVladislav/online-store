@@ -7,7 +7,6 @@ from db.schemas.card_shemas import CardAddSchema, CardSchema
 
 async def add_card(data: CardAddSchema, session: Session):
     new_card = cardModel( 
-        id=data.id,
         deck_id=data.deck_id,
         front_text=data.front_text,
         back_text=data.back_text,
