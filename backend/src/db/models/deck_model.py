@@ -17,6 +17,6 @@ class deckModel(Base):
     is_public: Mapped[bool]
     difficulty: Mapped[str]
 
-    user = relationship("userModel", back_populates="decks")
-    userdeck = relationship("userdeckModel", back_populates="decks")
-    card = relationship("cardModel", back_populates="decks")
+    users = relationship("userModel", back_populates="decks")
+    userdecks = relationship("userdeckModel", back_populates="decks")
+    cards = relationship("cardModel", back_populates="decks")

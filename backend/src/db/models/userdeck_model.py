@@ -12,5 +12,5 @@ class userdeckModel(Base):
     added_at: Mapped[str]
     progress: Mapped[float]
 
-    deck = relationship("deckModel", back_populates="userdecks")
-    user = relationship("userModel", back_populates="userdecks")
+    decks = relationship("deckModel", back_populates="userdecks")
+    users = relationship("userModel", back_populates="userdecks")

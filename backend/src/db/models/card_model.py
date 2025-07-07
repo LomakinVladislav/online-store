@@ -13,4 +13,4 @@ class cardModel(Base):
     transcription: Mapped[str]
     image_url: Mapped[str]
 
-    deck = relationship("deckModel", back_populates="cards")
+    decks = relationship("deckModel", back_populates="cards")
