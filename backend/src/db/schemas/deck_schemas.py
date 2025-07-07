@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 
 class DeckAddSchema(BaseModel):
-    id: int
     creator_user_id: int
     title: str
     theme: str
