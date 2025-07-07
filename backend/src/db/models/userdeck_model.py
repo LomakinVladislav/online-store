@@ -7,10 +7,10 @@ class userdeckModel(Base):
     __tablename__ = "userdecks"
 
     id: Mapped[intpk]
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    deck_id: Mapped[int] = mapped_column(ForeignKey("deck.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    deck_id: Mapped[int] = mapped_column(ForeignKey("decks.id"))
     added_at: Mapped[str]
     progress: Mapped[float]
 
-    deck = relationship("deckModel", back_populates="userdeck")
-    user = relationship("userModel", back_populates="userdeck")
+    deck = relationship("deckModel", back_populates="userdecks")
+    user = relationship("userModel", back_populates="userdecks")

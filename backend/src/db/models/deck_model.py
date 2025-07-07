@@ -7,7 +7,7 @@ class deckModel(Base):
     __tablename__ = "decks"  
 
     id: Mapped[intpk]
-    creator_user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    creator_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     title: Mapped[str]
     theme: Mapped[str]
     description: Mapped[str]
@@ -17,6 +17,6 @@ class deckModel(Base):
     is_public: Mapped[bool]
     difficulty: Mapped[str]
 
-    user = relationship("userModel", back_populates="deck")
-    userdeck = relationship("userdeckModel", back_populates="deck")
-    card = relationship("cardModel", back_populates="deck")
+    user = relationship("userModel", back_populates="decks")
+    userdeck = relationship("userdeckModel", back_populates="decks")
+    card = relationship("cardModel", back_populates="decks")

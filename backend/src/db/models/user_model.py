@@ -15,5 +15,5 @@ class userModel(Base):
     disabled: Mapped[bool]
     created_at: Mapped[datetime] = mapped_column(TIMESTAMP, server_default='NOW()')
 
-    deck = relationship("deckModel", back_populates="user")
-    userdeck = relationship("userdeckModel", back_populates="user")
+    deck = relationship("deckModel", back_populates="users")
+    userdeck = relationship("userdeckModel", back_populates="users")
