@@ -1,16 +1,14 @@
-import React from "react";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { FormProps } from 'antd';
-import { Button, Checkbox, Form, Input, Switch, Layout } from 'antd';
+import { Button, Checkbox, Form, Input, Switch, Layout, message, Space } from 'antd';
 import styles from "./Authorization.module.css"
+import axios from 'axios';
 
 type FieldType = {
   username?: string;
   password?: string;
   remember?: string;
-};
-
-const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-  console.log('Success:', values);
 };
 
 const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
@@ -24,6 +22,39 @@ type AuthorizationProps = {
   
 
 const Authorization: React.FC<AuthorizationProps> = ({ isDarkMode, toggleTheme }) => {
+    const navigate = useNavigate();
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+      try {
+        const formData = new URLSearchParams();
+        formData.append('username', values.username || '');
+        formData.append('password', values.password || '');
+
+        const response = await axios.post(
+          'http://127.0.0.1:8000/auth/token',
+          formData.toString(),
+          {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          }
+        );
+  
+        localStorage.setItem('access_token', response.data.access_token);
+        
+        navigate('/main');
+        
+      } catch (error) {
+        console.error('Ошибка авторизации:', error);
+        messageApi.error({
+          content: 'Ошибка авторизации. Проверьте данные',
+          duration: 3,
+      });
+      }
+    };
+    
+        
     return (
     <Layout style={{ height: "100vh" }}>
         <div className={styles.themeToggle}>
@@ -62,12 +93,13 @@ const Authorization: React.FC<AuthorizationProps> = ({ isDarkMode, toggleTheme }
                 <Input.Password />
             </Form.Item>
 
-            <Form.Item<FieldType> name="remember" label={null}>
+            <Form.Item<FieldType> name="remember" valuePropName="checked" label={null}>
                 <Checkbox>Remember me</Checkbox>    
             </Form.Item>
 
             <Form.Item label={null}>
-                <Button type="primary" htmlType="submit">
+              {contextHolder}
+                <Button type="primary" htmlType="submit" >
                     Submit
                 </Button>
             </Form.Item>
