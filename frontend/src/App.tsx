@@ -5,7 +5,8 @@ import LayoutComponent from './components/Layout/Layout';
 import { lightThemeConfig, darkThemeConfig } from './styles/theme';
 import DeckContent from './components/DeckContent/DeckContent';
 import Main from './pages/Main/Main'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Authorization from './pages/Authorization/Authorization'
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 const AppComponent: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -21,19 +22,23 @@ const AppComponent: React.FC = () => {
     <Router>
       <ConfigProvider theme={isDarkMode ? darkThemeConfig : lightThemeConfig}>
         <App>
-          <LayoutComponent isDarkMode={isDarkMode} toggleTheme={toggleTheme} >
-            <Routes>
-              {/* <Route path="/main" element={} /> */}
+        <Routes>
+            <Route path="/auth" element={<Authorization isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>} />
+            <Route element={(
+              <LayoutComponent isDarkMode={isDarkMode} toggleTheme={toggleTheme}>
+                <Outlet /> 
+              </LayoutComponent>
+            )}>
+              <Route path="/main" element={<Main />} />
+              <Route path="/decks/:deckId/content" element={<DeckContent />} />
+              <Route path="*" element={<Navigate to="/main" />} />
               {/* <Route path="/profile" element={} /> */}
               {/* <Route path="/settings" element={} /> */}
               {/* <Route path="/search" element={} /> */}
               {/* <Route path="/library" element={} /> */}
               {/* <Route path="/newdeck" element={} /> */}
-              (<Route path="*" element={<Navigate to="/main" />} />)
-              <Route path="/main" element={<Main />} />
-              <Route path="/decks/:deckId/content" element={<DeckContent />} />
-            </Routes>
-          </LayoutComponent>
+            </Route>
+          </Routes>
         </App>
       </ConfigProvider>
     </Router>
