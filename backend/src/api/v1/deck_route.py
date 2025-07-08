@@ -1,5 +1,7 @@
 from fastapi import APIRouter
-
+from auth.schemas import UserInDBSchema
+from fastapi import APIRouter, Depends
+from auth.dependencies import get_current_active_user
 from db.orm.deck_orm import add_deck, get_decks, get_deck_by_id
 from db.schemas.deck_schemas import DeckAddSchema
 
@@ -21,6 +23,6 @@ async def get_decks_api(session: SessionDep):
 
 
 @router.get("/decks/{deck_id}/cards")
-async def get_deck_by_id_api(deck_id: int, session: SessionDep):
+async def get_deck_by_id_api(deck_id: int, session: SessionDep, current_user: UserInDBSchema = Depends(get_current_active_user)):
     result = await get_deck_by_id(deck_id=deck_id, session=session)
     return result

@@ -48,7 +48,17 @@
     const fetchCards = async (deckId: string) => {
       try {
         setLoading(true);
-        const response = await axios.get<ICardData[]>(`http://127.0.0.1:8000/decks/${deckId}/cards`);
+
+        const token = localStorage.getItem('access_token');
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        };
+
+        const response = await axios.get<ICardData[]>(`http://127.0.0.1:8000/decks/${deckId}/cards`, config);
+
         setCards(response.data);
         setCurrentCardIndex(0);
         setFlipped(false);
