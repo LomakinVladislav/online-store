@@ -1,16 +1,62 @@
 .authorizationContainer {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    justify-content: center;
     padding: 20px;
-    box-sizing: border-box;
+    width: 100%;
 }
-
+  
+.formSwitcher {
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+}
+  
 .themeToggle {
     position: absolute;
     top: 20px;
     left: 20px;
-    z-index: 2; 
+    z-index: 100;
+}
+  
+.formItem {
+    width: 100%;
+    margin-bottom: 16px;
+}
+  
+.inputField {
+    width: 100%;
+}
+  
+.submitButton {
+    width: 100%;
+}
+  
+@media (min-width: 768px) {
+    .formItem {
+      display: flex;
+      flex-direction: column;
+}
+    
+.ant-form-item-label {
+      text-align: left;
+      padding-bottom: 8px;
+}
+}
+  
+@media (max-width: 767px) {
+.formItem {
+      display: block;
+}
+    
+.ant-form-item-label {
+      display: block;
+      margin-bottom: 8px;
+}
+    
+.ant-form-item-control {
+      width: 100%;
+}
 }

@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { FormProps } from 'antd';
-import { Button, Checkbox, Form, Input, Switch, Layout, message, Space } from 'antd';
+import { Button, Checkbox, Form, Input, Switch, Layout, message, Space, Radio } from 'antd';
 import styles from "./Authorization.module.css"
 import axios from 'axios';
 
-type FieldType = {
+type LoginFieldType = {
   username?: string;
   password?: string;
   remember?: string;
 };
 
-const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-  console.log('Failed:', errorInfo);
+type RegisterFieldType = {
+  username?: string;
+  email?: string;
+  full_name?: string;
+  password?: string;
+  confirmPassword?: string;
 };
 
 type AuthorizationProps = {
@@ -21,16 +25,23 @@ type AuthorizationProps = {
   };
   
 
-const Authorization: React.FC<AuthorizationProps> = ({ isDarkMode, toggleTheme }) => {
+  const Authorization: React.FC<AuthorizationProps> = ({ isDarkMode, toggleTheme }) => {
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
+    const [formType, setFormType] = useState<'login' | 'register'>('login');
+    const [loginForm] = Form.useForm<LoginFieldType>();
+    const [registerForm] = Form.useForm<RegisterFieldType>();
 
-    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+    const onFinishFailed: FormProps<LoginFieldType | RegisterFieldType>['onFinishFailed'] = (errorInfo) => {
+      console.log('Failed:', errorInfo);
+    };
+
+    const onFinishLogin: FormProps<LoginFieldType>['onFinish'] = async (values) => {
       try {
         const formData = new URLSearchParams();
         formData.append('username', values.username || '');
         formData.append('password', values.password || '');
-
+  
         const response = await axios.post(
           'http://127.0.0.1:8000/auth/token',
           formData.toString(),
@@ -42,7 +53,6 @@ const Authorization: React.FC<AuthorizationProps> = ({ isDarkMode, toggleTheme }
         );
   
         localStorage.setItem('access_token', response.data.access_token);
-        
         navigate('/main');
         
       } catch (error) {
@@ -50,61 +60,256 @@ const Authorization: React.FC<AuthorizationProps> = ({ isDarkMode, toggleTheme }
         messageApi.error({
           content: 'Ошибка авторизации. Проверьте данные',
           duration: 3,
-      });
+        });
+      }
+    };
+
+
+    const onFinishRegister: FormProps<RegisterFieldType>['onFinish'] = async (values) => {
+      try {
+        if (values.password !== values.confirmPassword) {
+          messageApi.error({
+            content: 'Пароли не совпадают',
+            duration: 3,
+          });
+          return;
+        }
+  
+        await axios.post(
+          'http://127.0.0.1:8000/users/',
+          {
+            username: values.username,
+            email: values.email,
+            full_name: values.full_name,
+            password: values.password,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+  
+        messageApi.success({
+          content: 'Регистрация прошла успешно! Теперь войдите в систему',
+          duration: 3,
+        });
+        
+        setFormType('login');
+        registerForm.resetFields();
+        
+      } catch (error) {
+        console.error('Ошибка регистрации:', error);
+        
+        let errorMessage = 'Ошибка регистрации';
+        if (axios.isAxiosError(error) && error.response?.data?.detail) {
+          errorMessage = error.response.data.detail;
+        }
+        
+        messageApi.error({
+          content: errorMessage,
+          duration: 3,
+        });
       }
     };
     
-        
+      
+    const handleFormSwitch = (type: 'login' | 'register') => {
+      setFormType(type);
+      loginForm.resetFields();
+      registerForm.resetFields();
+    };
+
+
     return (
-    <Layout style={{ height: "100vh" }}>
-        <div className={styles.themeToggle}>
+      <Layout style={{ minHeight: "100vh" }}>
+      <div className={styles.themeToggle}>
         <Switch
           checked={isDarkMode}
           onChange={toggleTheme}
           checkedChildren="🌙"
           unCheckedChildren="☀️"
         />
+      </div>
+      <div className={styles.authorizationContainer}>
+        <h1>{formType === 'login' ? 'Войдите, чтобы продолжить' : 'Создайте аккаунт'}</h1>
+        
+        <div className={styles.formSwitcher}>
+          <Radio.Group
+            value={formType}
+            onChange={(e) => handleFormSwitch(e.target.value)}
+            buttonStyle="solid"
+          >
+            <Radio.Button value="login">Войти</Radio.Button>
+            <Radio.Button value="register">Зарегистрироваться</Radio.Button>
+          </Radio.Group>
         </div>
-        <div className={styles.authorizationContainer}>
-        <h1>Войдите, чтобы продолжить</h1>
-        <Form
-          name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{ maxWidth: 600 }}
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
+
+        {/* Форма авторизации */}
+        <div 
+          style={{ 
+            display: formType === 'login' ? 'block' : 'none',
+            width: '100%',
+            maxWidth: '500px'
+          }}
         >
-            <Form.Item<FieldType>
-                label="Username"
-                name="username"
-                rules={[{ required: true, message: 'Please input your username!' }]}
+          <Form
+            form={loginForm}
+            name="login"
+            layout="vertical" 
+            initialValues={{ remember: true }}
+            onFinish={onFinishLogin}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+          >
+            <Form.Item<LoginFieldType>
+              label="Имя пользователя"
+              name="username"
+              rules={[{ required: true, message: 'Пожалуйста, введите имя пользователя!' }]}
+              className={styles.formItem} 
             >
-                <Input />
+              <Input className={styles.inputField} />
             </Form.Item>
 
-            <Form.Item<FieldType>
-                label="Password"
-                name="password"
-                rules={[{ required: true, message: 'Please input your password!' }]}
+            <Form.Item<LoginFieldType>
+              label="Пароль"
+              name="password"
+              rules={[{ required: true, message: 'Пожалуйста, введите пароль!' }]}
+              className={styles.formItem}
             >
-                <Input.Password />
+              <Input.Password className={styles.inputField} />
             </Form.Item>
 
-            <Form.Item<FieldType> name="remember" valuePropName="checked" label={null}>
-                <Checkbox>Remember me</Checkbox>    
+            <Form.Item<LoginFieldType> 
+              name="remember" 
+              valuePropName="checked" 
+              className={styles.formItem}
+            >
+              <Checkbox>Запомнить меня</Checkbox>    
             </Form.Item>
 
-            <Form.Item label={null}>
+            <Form.Item className={styles.formItem}>
               {contextHolder}
-                <Button type="primary" htmlType="submit" >
-                    Submit
-                </Button>
+              <Button type="primary" htmlType="submit" className={styles.submitButton}>
+                Войти
+              </Button>
             </Form.Item>
-        </Form>
+          </Form>
         </div>
+
+        {/* Форма регистрации */}
+        <div 
+          style={{ 
+            display: formType === 'register' ? 'block' : 'none',
+            width: '100%',
+            maxWidth: '500px'
+          }}
+        >
+          <Form
+            form={registerForm}
+            name="register"
+            layout="vertical" 
+            initialValues={{ remember: true }}
+            onFinish={onFinishRegister}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+          >
+            <Form.Item<RegisterFieldType>
+              label="Имя пользователя"
+              name="username"
+              rules={[{ 
+                required: true, 
+                message: 'Пожалуйста, введите имя пользователя!',
+                min: 3,
+                max: 50
+              }]}
+              className={styles.formItem}
+            >
+              <Input className={styles.inputField} />
+            </Form.Item>
+
+            <Form.Item<RegisterFieldType>
+              label="Email"
+              name="email"
+              rules={[
+                { 
+                  required: true, 
+                  message: 'Пожалуйста, введите email!' 
+                },
+                { 
+                  type: 'email', 
+                  message: 'Некорректный email адрес' 
+                }
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item<RegisterFieldType>
+              label="Полное имя"
+              name="full_name"
+              rules={[
+                { 
+                  required: true, 
+                  message: 'Пожалуйста, введите ваше имя!' 
+                },
+                { 
+                  min: 2, 
+                  message: 'Имя должно быть не менее 2 символов' 
+                }
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item<RegisterFieldType>
+              label="Пароль"
+              name="password"
+              rules={[
+                { 
+                  required: true, 
+                  message: 'Пожалуйста, введите пароль!' 
+                },
+                { 
+                  min: 6, 
+                  message: 'Пароль должен быть не менее 6 символов' 
+                }
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+
+            <Form.Item<RegisterFieldType>
+              label="Подтверждение пароля"
+              name="confirmPassword"
+              dependencies={['password']}
+              rules={[
+                { 
+                  required: true, 
+                  message: 'Пожалуйста, подтвердите пароль!' 
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('password') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Пароли не совпадают!'));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+
+            <Form.Item className={styles.formItem}>
+              {contextHolder}
+              <Button type="primary" htmlType="submit" className={styles.submitButton}>
+                Зарегистрироваться
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
     </Layout>
 )};
 
