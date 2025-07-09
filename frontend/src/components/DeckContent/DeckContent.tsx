@@ -4,6 +4,7 @@
   import { Card, Button } from 'antd';
   import { LeftOutlined, RightOutlined } from '@ant-design/icons';
   import axios from "axios";
+  import api from '../../api/api'
 
 
   const { Meta } = Card;
@@ -50,15 +51,7 @@
       try {
         setLoading(true);
 
-        const token = localStorage.getItem('access_token');
-
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        };
-
-        const response = await axios.get<ICardData[]>(`http://127.0.0.1:8000/decks/${deckId}/cards`, config);
+        const response = await api.get<ICardData[]>(`/decks/${deckId}/cards`);
 
         setCards(response.data);
         setCurrentCardIndex(0);
