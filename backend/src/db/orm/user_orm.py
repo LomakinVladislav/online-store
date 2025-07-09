@@ -11,7 +11,7 @@ async def add_user(data: UserAddSchema, session: Session):
         email = data.email,
         hashed_password=get_password_hash(data.password),
         full_name = data.full_name,
-        disabled = True
+        disabled = False
     )
     session.add(new_user)
     await session.commit()
