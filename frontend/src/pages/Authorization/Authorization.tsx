@@ -76,7 +76,7 @@ type AuthorizationProps = {
         }
   
         await axios.post(
-          'http://127.0.0.1:8000/users/',
+          'http://127.0.0.1:8000/users',
           {
             username: values.username,
             email: values.email,
@@ -102,16 +102,43 @@ type AuthorizationProps = {
         console.error('Ошибка регистрации:', error);
         
         let errorMessage = 'Ошибка регистрации';
-        if (axios.isAxiosError(error) && error.response?.data?.detail) {
-          errorMessage = error.response.data.detail;
-        }
+
+        if (axios.isAxiosError(error)) {
+      if (error.response) {
+        const responseData = error.response.data;
         
-        messageApi.error({
-          content: errorMessage,
-          duration: 3,
-        });
+        if (typeof responseData === 'string') {
+          errorMessage = responseData;
+        } else if (responseData.detail) {
+          if (typeof responseData.detail === 'string') {
+            errorMessage = responseData.detail;
+          } else if (Array.isArray(responseData.detail)) {
+            errorMessage = responseData.detail
+              .map((err: any) => err.msg || `Ошибка в поле ${err.loc.join('.')}: ${err.msg}`)
+              .join('; ');
+          } else {
+            errorMessage = JSON.stringify(responseData.detail);
+          }
+        } else if (responseData.message) {
+          errorMessage = responseData.message;
+        } else {
+          errorMessage = `Ошибка сервера: ${error.response.status}`;
+        }
+      } else if (error.request) {
+        errorMessage = 'Сервер не отвечает';
+      } else {
+        errorMessage = 'Ошибка при отправке запроса';
       }
-    };
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    
+    messageApi.error({
+      content: errorMessage,
+      duration: 3,
+    });
+  }
+};
     
       
     const handleFormSwitch = (type: 'login' | 'register') => {
