@@ -5,7 +5,7 @@ class UserAddSchema(BaseModel):
     email: str
     password: str
     full_name: str
-    disabled: bool
 
 class UserSchema(UserAddSchema):
     id: int
+    disabled: bool
