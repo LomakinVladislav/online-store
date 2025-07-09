@@ -65,8 +65,8 @@ const Authorization: React.FC<AuthorizationProps> = ({ isDarkMode, toggleTheme }
           unCheckedChildren="☀️"
         />
         </div>
-      
         <div className={styles.authorizationContainer}>
+        <h1>Войдите, чтобы продолжить</h1>
         <Form
           name="basic"
           labelCol={{ span: 8 }}

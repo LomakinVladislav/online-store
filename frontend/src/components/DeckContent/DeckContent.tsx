@@ -1,5 +1,5 @@
   import React, { useEffect, useState } from "react";
-  import { useParams } from 'react-router-dom';
+  import { useParams, useNavigate } from 'react-router-dom';
   import styles from "./DeckContent.module.css"
   import { Card, Button } from 'antd';
   import { LeftOutlined, RightOutlined } from '@ant-design/icons';
@@ -25,6 +25,7 @@
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [flipped, setFlipped] = useState<boolean>(false);
+    const navigate = useNavigate();
     
     useEffect(() => {
       if (deckId) {
@@ -63,6 +64,14 @@
         setCurrentCardIndex(0);
         setFlipped(false);
       } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 401) {
+            localStorage.removeItem('access_token');
+            navigate('/auth');
+            return; 
+          }
+        }
+        
         console.error('Error fetching cards:', error);
         setError('Не удалось загрузить карточки');
       } finally {
