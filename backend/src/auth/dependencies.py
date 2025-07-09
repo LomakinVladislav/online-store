@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jwt import InvalidTokenError
+from jwt import InvalidTokenError, ExpiredSignatureError
 import jwt
 from auth.config import SECRET_KEY, ALGORITHM
 from auth.schemas import TokenDataSchema, UserInDBSchema
@@ -23,6 +23,12 @@ async def get_current_user(session: SessionDep, token: Annotated[str, Depends(oa
         if username is None:
             raise credentials_exception
         token_data = TokenDataSchema(username=username)
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     except InvalidTokenError:
         raise credentials_exception
     
