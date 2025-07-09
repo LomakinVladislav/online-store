@@ -159,7 +159,7 @@ type AuthorizationProps = {
         />
       </div>
       <div className={styles.authorizationContainer}>
-        <h1>{formType === 'login' ? 'Войдите, чтобы продолжить' : 'Создайте аккаунт'}</h1>
+        <h1>{formType === 'login' ? 'Вход' : 'Регистрация'}</h1>
         
         <div className={styles.formSwitcher}>
           <Radio.Group

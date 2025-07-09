@@ -6,6 +6,7 @@ import { lightThemeConfig, darkThemeConfig } from './styles/theme';
 import DeckContent from './components/DeckContent/DeckContent';
 import Main from './pages/Main/Main'
 import Authorization from './pages/Authorization/Authorization'
+import ExpiredSession from './components/ExpiredSession/ExpiredSession'
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 const AppComponent: React.FC = () => {
@@ -32,6 +33,7 @@ const AppComponent: React.FC = () => {
               <Route path="/main" element={<Main />} />
               <Route path="/decks/:deckId/content" element={<DeckContent />} />
               <Route path="*" element={<Navigate to="/main" />} />
+              <Route path="/expired_session" element={<ExpiredSession />} />
               {/* <Route path="/profile" element={} /> */}
               {/* <Route path="/settings" element={} /> */}
               {/* <Route path="/search" element={} /> */}
