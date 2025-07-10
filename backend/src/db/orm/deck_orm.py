@@ -6,15 +6,13 @@ from db.models.deck_model import deckModel
 from db.models.card_model import cardModel
 from db.schemas.deck_schemas import DeckAddSchema
 
-async def add_deck(data: DeckAddSchema, session: Session):
+async def add_deck(data: DeckAddSchema, session: Session, creator_user_id):
     new_deck = deckModel(
-        creator_user_id=data.creator_user_id,
+        creator_user_id=creator_user_id,
         title=data.title,
         theme=data.theme,
         description=data.description,
         image_url=data.image_url,
-        created_at=data.created_at,  # Можно генерировать автоматически (datetime.now())
-        updated_at=data.updated_at,
         is_public=data.is_public,
         difficulty=data.difficulty
     )

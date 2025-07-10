@@ -1,4 +1,5 @@
-from sqlalchemy import ForeignKey
+from datetime import datetime
+from sqlalchemy import ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 from db.database import Base, intpk
 
@@ -12,10 +13,10 @@ class deckModel(Base):
     theme: Mapped[str]
     description: Mapped[str]
     image_url: Mapped[str]
-    created_at: Mapped[str]  
-    updated_at: Mapped[str]
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     is_public: Mapped[bool]
-    difficulty: Mapped[str]
+    difficulty: Mapped[int]
 
     users = relationship("userModel", back_populates="decks")
     userdecks = relationship("userdeckModel", back_populates="decks")

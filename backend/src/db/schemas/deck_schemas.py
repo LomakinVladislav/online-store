@@ -1,15 +1,15 @@
 from pydantic import BaseModel
 
 class DeckAddSchema(BaseModel):
-    creator_user_id: int
     title: str
     theme: str
     description: str
     image_url: str
-    created_at: str
-    updated_at: str
     is_public: bool
-    difficulty: str
+    difficulty: int
 
 class DeckSchema(DeckAddSchema):
     id: int
+    creator_user_id: int
+    created_at: str
+    updated_at: str
