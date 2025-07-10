@@ -3,7 +3,7 @@ import { Card, List } from 'antd';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from './Main.module.css'
-import { useMenuContext  } from '../../contexts/MenuContext';
+import { useMenu  } from '../../contexts/MenuContext';
 
 const { Meta } = Card;
 
@@ -22,7 +22,7 @@ interface IDeckData {
 
 
 const Main: React.FC = () => {
-  const { setSelectedMenuKey } = useMenuContext();
+  const { setActiveMenuKey } = useMenu();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [decks, setDecks] = useState<IDeckData[]>([]);
@@ -30,6 +30,7 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     fetchDecks();
+    setActiveMenuKey('sidebar-home')
   }, []);
 
   const fetchDecks = async () => {
@@ -44,9 +45,10 @@ const Main: React.FC = () => {
         setLoading(false);
       }
     };  
-
+  
+    // Сброс выделения!
   const handleCardClick = (deckId: number) => {
-    setSelectedMenuKey([]);
+    setActiveMenuKey(null);
     navigate(`/decks/${deckId}/content`);
   };
 

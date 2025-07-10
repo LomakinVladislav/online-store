@@ -1,6 +1,5 @@
-import React from 'react';
-import { lightThemeConfig, darkThemeConfig } from '../../styles/theme';
-import { Layout, Menu, ConfigProvider, Switch, MenuProps} from 'antd';
+import { Layout, Menu, Switch} from 'antd';
+import { useMenu } from '../../contexts/MenuContext';
 import { UserOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import styles from './Header.module.css'
 import { useNavigate } from 'react-router-dom';
@@ -11,28 +10,31 @@ type HeaderProps = {
   toggleTheme: () => void;
 };
 
-
 const { Header} = Layout;
-
-type MenuItem = Required<MenuProps>['items'][number];
-
 
 const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
   const navigate = useNavigate();
+  const { activeMenuKey, setActiveMenuKey } = useMenu();
 
-  const handleMenuClick: MenuProps['onClick'] = (e) => {
-    if (e.key === '2') {
-      navigate('/deck_creation'); // Переход на страницу создания
-    } else if (e.key === '1') {
-      navigate('/profile'); // Пример для других пунктов
-    }
+  const handleMenuClick = (key: string, path: string) => {
+    setActiveMenuKey(key);
+    navigate(path);
   };
 
-  const items: MenuItem[] = [
-    { key: '1', icon: <UserOutlined />, label: 'Профиль' },
-    { key: '2', icon: <PlusCircleOutlined />, label: 'Создать' },
-  ]
-
+  const items = [
+    {
+      key: 'header-profile',
+      icon: <UserOutlined />,
+      label: 'Профиль',
+      onClick: () => handleMenuClick('header-profile', '/profile')
+    },
+    {
+      key: 'header-create',
+      icon: <PlusCircleOutlined />,
+      label: 'Создать',
+      onClick: () => handleMenuClick('header-create', '/deck_creation')
+    }
+  ];
   return (
       <Header
         style={{
@@ -60,7 +62,7 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
           mode="horizontal"
           defaultSelectedKeys={['1']}
           items={items}
-          onClick={handleMenuClick}
+          selectedKeys={activeMenuKey ? [activeMenuKey] : []}
           style={{ flex: 1, flexDirection: `row-reverse` , minWidth: 0}}
         />
       </Header>

@@ -3,36 +3,49 @@ import {
   HomeOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  FolderOpenOutlined
+  BookOutlined,
+  StarOutlined,
 } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Button, Menu } from 'antd';
+import { Button, Menu, Layout } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { useMenuContext  } from '../../contexts/MenuContext';
+import { useMenu  } from '../../contexts/MenuContext';
 
-type MenuItem = Required<MenuProps>['items'][number];
-
-const items: MenuItem[] = [
-  { key: '1', icon: <HomeOutlined />, label: 'Главная' },
-  { key: '2', icon: <FolderOpenOutlined />, label: 'Ваша библиотека' },
-];
+const { Sider } = Layout;
 
 const SidebarComponent: React.FC = () => {
-  const { selectedMenuKey, setSelectedMenuKey } = useMenuContext();
-  const [collapsed, setCollapsed] = useState(false);
-
   const navigate = useNavigate();
+  const { activeMenuKey, setActiveMenuKey } = useMenu();
+  const [collapsed, setCollapsed] = useState(false);
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
 
-  const handleMenuClick: MenuProps['onClick'] = (e) => {
-    setSelectedMenuKey([e.key]);
-    if (e.key === '1') { 
-      navigate('/main');
-    }
+  const handleMenuClick = (key: string, path: string) => {
+    setActiveMenuKey(key);
+    navigate(path);
   };
+
+  const items = [
+    {
+      key: 'sidebar-home',
+      icon: <HomeOutlined />,
+      label: 'Главная',
+      onClick: () => handleMenuClick('sidebar-home', '/')
+    },
+    {
+      key: 'sidebar-decks',
+      icon: <BookOutlined />,
+      label: 'Мои колоды',
+      onClick: () => handleMenuClick('sidebar-decks', '/decks')
+    },
+    {
+      key: 'sidebar-favorites',
+      icon: <StarOutlined />,
+      label: 'Избранное',
+      onClick: () => handleMenuClick('sidebar-favorites', '/favorites')
+    }
+  ];
 
   return (
     <div>
@@ -41,12 +54,11 @@ const SidebarComponent: React.FC = () => {
       </Button>
       <Menu
         style={{borderRadius: 10}}
-        selectedKeys={selectedMenuKey}
+        selectedKeys={activeMenuKey ? [activeMenuKey] : []}
         mode="inline"
         theme="light"
         inlineCollapsed={collapsed}
         items={items}
-        onClick={handleMenuClick}
       />
     </div>
   );
