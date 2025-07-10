@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './DeckCreation.module.css'
 import {
   Button,
@@ -30,8 +30,16 @@ const DeckCreation: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  
+    useEffect(() => {
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, []);
+
     const onFinish = async (values: FormValues) => {
       try {
         setLoading(true);
@@ -52,7 +60,10 @@ const DeckCreation: React.FC = () => {
                 content: 'Ваш набор успешно создан',
                 duration: 3,
             });
-          form.resetFields();
+            form.resetFields();
+            timerRef.current = setTimeout(() => {
+                navigate(`/deck_content_creation/$`); // Потом заменить на '/decks/${deckID}/creation'
+            }, 1500);
         }
       } catch (err) {
         const error = err as AxiosError;
@@ -124,7 +135,6 @@ const DeckCreation: React.FC = () => {
             </Select>
           </Form.Item>
   
-          {/* Описание */}
           <Form.Item 
             name="description"
             label="Описание"
@@ -132,7 +142,6 @@ const DeckCreation: React.FC = () => {
             <TextArea rows={4} />
           </Form.Item>
   
-          {/* Сложность */}
           <Form.Item 
             name="difficulty"
             label="Сложность"
@@ -147,8 +156,6 @@ const DeckCreation: React.FC = () => {
               type="primary" 
               htmlType="submit"
               loading={loading}
-              onClick={() => {navigate('/deck_content_creation');}                     
-          }
             >
               Создать
             </Button>
