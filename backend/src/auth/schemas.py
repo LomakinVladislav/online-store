@@ -14,4 +14,5 @@ class UserSchema(BaseModel):
     disabled: bool | None = None
 
 class UserInDBSchema(UserSchema):
+    id: int
     hashed_password: str

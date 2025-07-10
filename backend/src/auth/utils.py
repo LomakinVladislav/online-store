@@ -29,6 +29,7 @@ async def get_user(session: Session, username: str) -> UserInDBSchema | None:
     user = result.scalars().first()
     if user:
         return UserInDBSchema(
+            id=user.id,
             username=user.username,
             email=user.email,
             full_name=user.full_name,
