@@ -7,12 +7,13 @@ from db.models.card_model import cardModel
 from db.schemas.deck_schemas import DeckAddSchema
 
 async def add_deck(data: DeckAddSchema, session: Session, creator_user_id):
+    image_url= "https://foni.papik.pro/uploads/posts/2024-10/foni-papik-pro-rxs7-p-kartinki-slon-dlya-detei-na-prozrachnom-fo-1.png" if data.image_url=="" else data.image_url
     new_deck = deckModel(
         creator_user_id=creator_user_id,
         title=data.title,
-        theme=data.theme,
+        category=data.category,
         description=data.description,
-        image_url=data.image_url,
+        image_url=image_url,
         is_public=data.is_public,
         difficulty=data.difficulty
     )

@@ -10,7 +10,7 @@ class deckModel(Base):
     id: Mapped[intpk]
     creator_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     title: Mapped[str]
-    theme: Mapped[str]
+    category: Mapped[str]
     description: Mapped[str]
     image_url: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

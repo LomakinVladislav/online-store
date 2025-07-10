@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 class DeckAddSchema(BaseModel):
     title: str
-    theme: str
+    category: str
     description: str
     image_url: str
     is_public: bool
