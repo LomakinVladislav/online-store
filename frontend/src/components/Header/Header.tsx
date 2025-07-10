@@ -3,6 +3,7 @@ import { lightThemeConfig, darkThemeConfig } from '../../styles/theme';
 import { Layout, Menu, ConfigProvider, Switch, MenuProps} from 'antd';
 import { UserOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import styles from './Header.module.css'
+import { useNavigate } from 'react-router-dom';
 
 
 type HeaderProps = {
@@ -15,11 +16,23 @@ const { Header} = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const items: MenuItem[] = [
-  { key: '1', icon: <UserOutlined />, label: 'Профиль' },
-  { key: '2', icon: <PlusCircleOutlined />, label: 'Создать' },
-]
+
 const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
+  const navigate = useNavigate();
+
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    if (e.key === '2') {
+      navigate('/deck_creation'); // Переход на страницу создания
+    } else if (e.key === '1') {
+      navigate('/profile'); // Пример для других пунктов
+    }
+  };
+
+  const items: MenuItem[] = [
+    { key: '1', icon: <UserOutlined />, label: 'Профиль' },
+    { key: '2', icon: <PlusCircleOutlined />, label: 'Создать' },
+  ]
+
   return (
       <Header
         style={{
@@ -47,6 +60,7 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
           mode="horizontal"
           defaultSelectedKeys={['1']}
           items={items}
+          onClick={handleMenuClick}
           style={{ flex: 1, flexDirection: `row-reverse` , minWidth: 0}}
         />
       </Header>

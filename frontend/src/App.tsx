@@ -7,6 +7,7 @@ import DeckContent from './components/DeckContent/DeckContent';
 import Main from './pages/Main/Main'
 import Authorization from './pages/Authorization/Authorization'
 import ExpiredSession from './components/ExpiredSession/ExpiredSession'
+import DeckCreation from './pages/DeckCreation/DeckCreation'
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 const AppComponent: React.FC = () => {
@@ -34,6 +35,7 @@ const AppComponent: React.FC = () => {
               <Route path="/decks/:deckId/content" element={<DeckContent />} />
               <Route path="*" element={<Navigate to="/main" />} />
               <Route path="/expired_session" element={<ExpiredSession />} />
+              <Route path="/deck_creation" element={<DeckCreation />} />
               {/* <Route path="/profile" element={} /> */}
               {/* <Route path="/settings" element={} /> */}
               {/* <Route path="/search" element={} /> */}
