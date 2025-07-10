@@ -4,15 +4,15 @@ from fastapi import APIRouter, Depends
 from auth.dependencies import get_current_active_user
 from db.orm.deck_orm import add_deck, get_decks, get_deck_by_id
 from db.schemas.deck_schemas import DeckAddSchema
-
 from api.v1.common_route import SessionDep
 
 router = APIRouter()
 
 
 @router.post("/decks/")
-async def add_deck_api(data: DeckAddSchema, session: SessionDep):
-    result = await add_deck(data=data, session=session)
+async def add_deck_api(data: DeckAddSchema, session: SessionDep, current_user: UserInDBSchema = Depends(get_current_active_user)):
+    creator_user_id = current_user.id 
+    result = await add_deck(data=data, session=session, creator_user_id=creator_user_id)
     return result
 
 
