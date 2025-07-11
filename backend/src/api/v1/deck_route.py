@@ -2,17 +2,17 @@ from fastapi import APIRouter, HTTPException, status
 from auth.schemas import UserInDBSchema
 from fastapi import APIRouter, Depends
 from auth.dependencies import get_current_active_user
-from db.orm.deck_orm import add_deck, get_decks, get_deck_by_id
-from db.schemas.deck_schemas import DeckAddSchema
+from db.orm.deck_orm import add_deck_with_cards, get_decks, get_deck_by_id
+from db.schemas.deck_schemas import DeckWithCardsCreateSchema
 from api.v1.common_route import SessionDep
 
 router = APIRouter()
 
 
 @router.post("/decks/")
-async def add_deck_api(data: DeckAddSchema, session: SessionDep, current_user: UserInDBSchema = Depends(get_current_active_user)):
+async def add_deck_api(data: DeckWithCardsCreateSchema, session: SessionDep, current_user: UserInDBSchema = Depends(get_current_active_user)):
     creator_user_id = current_user.id 
-    result = await add_deck(data=data, session=session, creator_user_id=creator_user_id)
+    result = await add_deck_with_cards(data=data, session=session, creator_user_id=creator_user_id)
     return result
 
 
