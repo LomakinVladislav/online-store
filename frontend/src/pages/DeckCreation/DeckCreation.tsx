@@ -10,7 +10,7 @@ import {
   message,
   Card,
   Row,
-  Col
+  Col, 
 } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import api from '../../api/api'
@@ -147,13 +147,12 @@ const DeckCreation: React.FC = () => {
         {contextHolder}
         <h1 style={{display: "flex", justifyContent: "center"}}>Создание нового карточного набора</h1>
 
-        <div className={styles.formContainer}>
         <Form<FormValues>
           form={form}
           onFinish={onFinish}
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 16 }}
-          layout="horizontal"
+          labelCol={{ span: 24 }}
+          wrapperCol={{ span: 24 }}
+          layout="horizontal" 
         >
         <Card title="Настройки колоды" className={styles.sectionCard}>
           <Form.Item 
@@ -203,7 +202,7 @@ const DeckCreation: React.FC = () => {
             name="description"
             label="Описание"
           >
-            <TextArea rows={4} />
+            <TextArea rows={3} />
           </Form.Item>
   
           <Form.Item 
@@ -215,7 +214,6 @@ const DeckCreation: React.FC = () => {
           </Form.Item>
         </Card>
 
-        {/* Блок карточек */}
         <Card 
             title="Карточки" 
             className={styles.sectionCard}
@@ -229,13 +227,13 @@ const DeckCreation: React.FC = () => {
                   cards.length > 1 && (
                     <DeleteOutlined 
                       key="delete" 
-                      onClick={() => removeCard(index)} 
+                      onClick={() => removeCard(index)}
                     />
                   )
                 ].filter(Boolean) as React.ReactNode[]}
               >
-                <Row gutter={16}>
-                  <Col span={12}>
+                <Row gutter={[16, 16]} align="top">
+                  <Col xs={24} sm={12} md={6}>
                     <Form.Item
                       label="Слово"
                       // validateStatus={!card.front_text ? 'error' : ''}
@@ -247,7 +245,9 @@ const DeckCreation: React.FC = () => {
                         placeholder="Слово или фраза"
                       />
                     </Form.Item>
+                  </Col>
                     
+                  <Col xs={24} sm={12} md={6}>
                     <Form.Item 
                       label="Транскрипция" 
                       rules={[{ required: true, message: 'Обязательное поле' }]}
@@ -260,7 +260,7 @@ const DeckCreation: React.FC = () => {
                     </Form.Item>
                   </Col>
                   
-                  <Col span={12}>
+                  <Col xs={24} sm={12} md={6}>
                     <Form.Item
                       label="Перевод"
                       rules={[{ required: true, message: 'Обязательное поле' }]}
@@ -272,7 +272,9 @@ const DeckCreation: React.FC = () => {
                         placeholder="Перевод"
                       />
                     </Form.Item>
-                    
+                  </Col>
+
+                  <Col xs={24} sm={12} md={6}>
                     <Form.Item label="Изображение" rules={[{ required: true, message: 'Обязательное поле' }]}>
                       <Input
                         value={card.image_url}
@@ -303,13 +305,13 @@ const DeckCreation: React.FC = () => {
               htmlType="submit"
               loading={loading}
               size="large"
+              style={{marginBottom: "10px"}}
             >
               Создать
             </Button>
           </Form.Item>
         </Form>
         </div>
-      </div>
     );
   };
   

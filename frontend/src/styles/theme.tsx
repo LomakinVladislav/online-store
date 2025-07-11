@@ -14,7 +14,9 @@ export const lightThemeConfig: ThemeConfig = {
       colorPrimaryHover: '#7782fc',
     },
     Card: {
-      colorBgContainer: '#97c3fc'
+      colorBgContainer: '#97c3fc',
+      // bodyPadding: 15, Более компактный вариант формы создания набора 
+      // actionsLiMargin: '5px',
     },
   },
 };
