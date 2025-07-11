@@ -89,7 +89,6 @@ const DeckCreation: React.FC = () => {
           return false;
         }
         
-        // Дополнительная проверка формата URL
         if (card.image_url.trim() && !isValidUrl(card.image_url)) {
           messageApi.error(
             `Некорректный URL изображения в карточке ${i + 1}`
@@ -100,7 +99,6 @@ const DeckCreation: React.FC = () => {
       return true;
     };
     
-    // Вспомогательная функция для проверки URL
     const isValidUrl = (url: string) => {
       try {
         new URL(url);
@@ -128,15 +126,6 @@ const DeckCreation: React.FC = () => {
           },
           cards: cards
         };
-
-        // const payload = {
-        //   title: values.title,
-        //   category: values.category,
-        //   description: values.description || "",
-        //   image_url: values.image_url || "",
-        //   is_public: values.privacy === 'public',
-        //   difficulty: values.difficulty
-        // };
   
         const response = await api.post('/decks/', payload);
         
@@ -148,11 +137,8 @@ const DeckCreation: React.FC = () => {
             form.resetFields();
             setCards([{ front_text: '', back_text: '', image_url: '', transcription: '' }]);
             timerRef.current = setTimeout(() => {
-                navigate(`/deck_content_creation/$`); // Потом заменить на '/decks/${deckID}/creation'
+                navigate(`/main`);
             }, 1500);
-            // timerRef.current = setTimeout(() => {
-            //   navigate(`/decks/${response.data.id}`); Можно сделать такой путь, только тогда бэк должен отдавать id 
-            // }, 1500);
         }
       } catch (err) {
         const error = err as AxiosError;
@@ -263,7 +249,6 @@ const DeckCreation: React.FC = () => {
                   <Col xs={24} sm={12} md={6}>
                     <Form.Item
                       label="Слово"
-                      // validateStatus={!card.front_text ? 'error' : ''}
                       rules={[{ required: true, message: 'Обязательное поле' }]}
                     >
                       <Input
@@ -291,7 +276,6 @@ const DeckCreation: React.FC = () => {
                     <Form.Item
                       label="Перевод"
                       rules={[{ required: true, message: 'Обязательное поле' }]}
-                      // validateStatus={!card.back_text ? 'error' : ''}
                     >
                       <Input
                         value={card.back_text}
