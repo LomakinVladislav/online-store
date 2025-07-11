@@ -3,7 +3,7 @@ import { theme, ThemeConfig } from 'antd';
 export const lightThemeConfig: ThemeConfig = {
   algorithm: theme.defaultAlgorithm,
   token: {
-    colorPrimary: '#b699ff',
+    colorPrimary: '#5764f7',
     colorBgBase: '#ffffff',
     colorTextBase: '#000000',
     colorBorder: '#d9d9d9',
@@ -11,10 +11,10 @@ export const lightThemeConfig: ThemeConfig = {
   },
   components: {
     Button: {
-      colorPrimaryHover: '#a886fc',
+      colorPrimaryHover: '#7782fc',
     },
     Card: {
-      colorBgContainer: '#b699ff'
+      colorBgContainer: '#97c3fc'
     },
   },
 };
