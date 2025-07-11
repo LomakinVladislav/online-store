@@ -7,8 +7,12 @@ import {
   Radio,
   Rate,
   Select,
-  message
+  message,
+  Card,
+  Row,
+  Col
 } from 'antd';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import api from '../../api/api'
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -16,14 +20,20 @@ import { useNavigate } from 'react-router-dom';
 const { TextArea } = Input;
 
 interface FormValues {
-    title: string;
-    privacy: 'public' | 'private';
-    image_url: string;
-    category: string;
-    description: string;
-    difficulty: number;
-  }
+  title: string;
+  privacy: 'public' | 'private';
+  image_url: string;
+  category: string;
+  description: string;
+  difficulty: number;
+}
 
+interface CardType {
+  front_text: string;
+  back_text: string;
+  transcription?: string;
+  image_url?: string;
+}
 
 const DeckCreation: React.FC = () => {
     const [form] = Form.useForm<FormValues>();
@@ -32,6 +42,10 @@ const DeckCreation: React.FC = () => {
     const navigate = useNavigate();
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+    const [cards, setCards] = useState<CardType[]>([
+      { front_text: '', back_text: '' }
+    ]);  
+    
     useEffect(() => {
         return () => {
             if (timerRef.current) {
@@ -40,18 +54,62 @@ const DeckCreation: React.FC = () => {
         };
     }, []);
 
+
+    const addCard = () => {
+      setCards([...cards, { front_text: '', back_text: '' }]);
+    };
+
+    const removeCard = (index: number) => {
+      if (cards.length <= 1) return;
+      const newCards = [...cards];
+      newCards.splice(index, 1);
+      setCards(newCards);
+    };
+  
+    const updateCard = (index: number, field: keyof CardType, value: string) => {
+      const newCards = [...cards];
+      newCards[index] = { ...newCards[index], [field]: value };
+      setCards(newCards);
+    };
+
+    const validateCards = (): boolean => {
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        if (!card.front_text.trim() || !card.back_text.trim()) {
+          messageApi.error(`Заполните обязательные поля в карточке ${i + 1}`);
+          return false;
+        }
+      }
+      return true;
+    };
+
+
     const onFinish = async (values: FormValues) => {
+      if (!validateCards()) return;
+      
       try {
         setLoading(true);
         
         const payload = {
-          title: values.title,
-          category: values.category,
-          description: values.description || "",
-          image_url: values.image_url || "",
-          is_public: values.privacy === 'public',
-          difficulty: values.difficulty
+          deck: {
+            title: values.title,
+            category: values.category,
+            description: values.description || "",
+            image_url: values.image_url || "",
+            is_public: values.privacy === 'public',
+            difficulty: values.difficulty
+          },
+          cards: cards
         };
+
+        // const payload = {
+        //   title: values.title,
+        //   category: values.category,
+        //   description: values.description || "",
+        //   image_url: values.image_url || "",
+        //   is_public: values.privacy === 'public',
+        //   difficulty: values.difficulty
+        // };
   
         const response = await api.post('/decks/', payload);
         
@@ -61,9 +119,13 @@ const DeckCreation: React.FC = () => {
                 duration: 3,
             });
             form.resetFields();
+            setCards([{ front_text: '', back_text: '' }]);
             timerRef.current = setTimeout(() => {
                 navigate(`/deck_content_creation/$`); // Потом заменить на '/decks/${deckID}/creation'
             }, 1500);
+            // timerRef.current = setTimeout(() => {
+            //   navigate(`/decks/${response.data.id}`); Можно сделать такой путь, только тогда бэк должен отдавать id 
+            // }, 1500);
         }
       } catch (err) {
         const error = err as AxiosError;
@@ -81,16 +143,19 @@ const DeckCreation: React.FC = () => {
     };
   
     return (
-      <div>
-        <h1>Создание нового карточного набора</h1>
+      <div className={styles.mainContainer}>
+        {contextHolder}
+        <h1 style={{display: "flex", justifyContent: "center"}}>Создание нового карточного набора</h1>
+
+        <div className={styles.formContainer}>
         <Form<FormValues>
           form={form}
           onFinish={onFinish}
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 14 }}
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 16 }}
           layout="horizontal"
-          style={{ maxWidth: 700 }}
         >
+        <Card title="Настройки колоды" className={styles.sectionCard}>
           <Form.Item 
             name="title"
             label="Название"
@@ -119,7 +184,6 @@ const DeckCreation: React.FC = () => {
             <Input placeholder="https://example.com/image.jpg" />
           </Form.Item>
   
-          {/* Категория */}
           <Form.Item 
             name="category"
             label="Категория"
@@ -149,18 +213,102 @@ const DeckCreation: React.FC = () => {
           >
             <Rate />
           </Form.Item>
+        </Card>
+
+        {/* Блок карточек */}
+        <Card 
+            title="Карточки" 
+            className={styles.sectionCard}
+          >
+            {cards.map((card, index) => (
+              <Card 
+                key={index} 
+                title={`Карточка ${index + 1}`}
+                className={styles.cardItem}
+                actions={[
+                  cards.length > 1 && (
+                    <DeleteOutlined 
+                      key="delete" 
+                      onClick={() => removeCard(index)} 
+                    />
+                  )
+                ].filter(Boolean) as React.ReactNode[]}
+              >
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Form.Item
+                      label="Слово"
+                      // validateStatus={!card.front_text ? 'error' : ''}
+                      rules={[{ required: true, message: 'Обязательное поле' }]}
+                    >
+                      <Input
+                        value={card.front_text}
+                        onChange={e => updateCard(index, 'front_text', e.target.value)}
+                        placeholder="Слово или фраза"
+                      />
+                    </Form.Item>
+                    
+                    <Form.Item 
+                      label="Транскрипция" 
+                      rules={[{ required: true, message: 'Обязательное поле' }]}
+                    >
+                      <Input
+                        value={card.transcription}
+                        onChange={e => updateCard(index, 'transcription', e.target.value)}
+                        placeholder="Транскрипция"
+                      />
+                    </Form.Item>
+                  </Col>
+                  
+                  <Col span={12}>
+                    <Form.Item
+                      label="Перевод"
+                      rules={[{ required: true, message: 'Обязательное поле' }]}
+                      // validateStatus={!card.back_text ? 'error' : ''}
+                    >
+                      <Input
+                        value={card.back_text}
+                        onChange={e => updateCard(index, 'back_text', e.target.value)}
+                        placeholder="Перевод"
+                      />
+                    </Form.Item>
+                    
+                    <Form.Item label="Изображение" rules={[{ required: true, message: 'Обязательное поле' }]}>
+                      <Input
+                        value={card.image_url}
+                        onChange={e => updateCard(index, 'image_url', e.target.value)}
+                        placeholder="Ссылка на изображение"
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Card>
+            ))}
+            <div className={styles.centerContainer}>
+            <Button 
+              type="primary" 
+              icon={<PlusOutlined />}
+              onClick={addCard}
+            >
+              Добавить карточку
+            </Button>
+            </div>
+          </Card>
+          
   
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            {contextHolder}
+          <Form.Item className={styles.centerContainer}>
+            {contextHolder} 
             <Button 
               type="primary" 
               htmlType="submit"
               loading={loading}
+              size="large"
             >
               Создать
             </Button>
           </Form.Item>
         </Form>
+        </div>
       </div>
     );
   };
