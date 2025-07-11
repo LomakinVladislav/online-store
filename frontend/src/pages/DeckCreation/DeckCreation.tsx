@@ -252,9 +252,9 @@ const DeckCreation: React.FC = () => {
                       rules={[{ required: true, message: 'Обязательное поле' }]}
                     >
                       <Input
-                        value={card.front_text}
-                        onChange={e => updateCard(index, 'front_text', e.target.value)}
-                        placeholder="Слово или фраза"
+                        value={card.back_text}
+                        onChange={e => updateCard(index, 'back_text', e.target.value)}
+                        placeholder="Слово на иностранном языке"
                       />
                     </Form.Item>
                   </Col>
@@ -278,8 +278,8 @@ const DeckCreation: React.FC = () => {
                       rules={[{ required: true, message: 'Обязательное поле' }]}
                     >
                       <Input
-                        value={card.back_text}
-                        onChange={e => updateCard(index, 'back_text', e.target.value)}
+                        value={card.front_text}
+                        onChange={e => updateCard(index, 'front_text', e.target.value)}
                         placeholder="Перевод"
                       />
                     </Form.Item>
