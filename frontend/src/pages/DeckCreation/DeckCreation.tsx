@@ -31,8 +31,8 @@ interface FormValues {
 interface CardType {
   front_text: string;
   back_text: string;
-  transcription?: string;
-  image_url?: string;
+  transcription: string;
+  image_url: string;
 }
 
 const DeckCreation: React.FC = () => {
@@ -43,7 +43,7 @@ const DeckCreation: React.FC = () => {
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
     const [cards, setCards] = useState<CardType[]>([
-      { front_text: '', back_text: '' }
+      { front_text: '', back_text: '', image_url: '', transcription: '' }
     ]);  
     
     useEffect(() => {
@@ -56,7 +56,7 @@ const DeckCreation: React.FC = () => {
 
 
     const addCard = () => {
-      setCards([...cards, { front_text: '', back_text: '' }]);
+      setCards([...cards, { front_text: '', back_text: '', image_url: '', transcription: '' }]);
     };
 
     const removeCard = (index: number) => {
@@ -75,12 +75,39 @@ const DeckCreation: React.FC = () => {
     const validateCards = (): boolean => {
       for (let i = 0; i < cards.length; i++) {
         const card = cards[i];
-        if (!card.front_text.trim() || !card.back_text.trim()) {
-          messageApi.error(`Заполните обязательные поля в карточке ${i + 1}`);
+        const errors = [];
+        
+        if (!card.front_text.trim()) errors.push("Слово");
+        if (!card.back_text.trim()) errors.push("Перевод");
+        if (!card.transcription.trim()) errors.push("Транскрипция");
+        if (!card.image_url.trim()) errors.push("Изображение");
+        
+        if (errors.length > 0) {
+          messageApi.error(
+            `Заполните обязательные поля в карточке ${i + 1}: ${errors.join(", ")}`
+          );
+          return false;
+        }
+        
+        // Дополнительная проверка формата URL
+        if (card.image_url.trim() && !isValidUrl(card.image_url)) {
+          messageApi.error(
+            `Некорректный URL изображения в карточке ${i + 1}`
+          );
           return false;
         }
       }
       return true;
+    };
+    
+    // Вспомогательная функция для проверки URL
+    const isValidUrl = (url: string) => {
+      try {
+        new URL(url);
+        return true;
+      } catch {
+        return false;
+      }
     };
 
 
@@ -119,7 +146,7 @@ const DeckCreation: React.FC = () => {
                 duration: 3,
             });
             form.resetFields();
-            setCards([{ front_text: '', back_text: '' }]);
+            setCards([{ front_text: '', back_text: '', image_url: '', transcription: '' }]);
             timerRef.current = setTimeout(() => {
                 navigate(`/deck_content_creation/$`); // Потом заменить на '/decks/${deckID}/creation'
             }, 1500);
