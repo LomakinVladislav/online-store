@@ -4,8 +4,7 @@ from sqlalchemy import select
 
 from db.models.deck_model import deckModel
 from db.models.card_model import cardModel
-from db.schemas.deck_schemas import DeckWithCardsCreateSchema
-from db.schemas.deck_schemas import DeckAddSchema
+from db.schemas.deck_schemas import DeckWithCardsCreateSchema, DeckAddSchema
 
 
 async def add_deck_with_cards(data: DeckWithCardsCreateSchema, session: Session, creator_user_id: int):
