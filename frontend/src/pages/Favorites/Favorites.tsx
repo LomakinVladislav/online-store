@@ -37,7 +37,7 @@ const Main: React.FC = () => {
   const favoriteDecks = decks.filter(deck => favorites.includes(deck.id));
 
   useEffect(() => {
-    setActiveMenuKey('sidebar-home');
+    setActiveMenuKey('sidebar-favorites');
     
     const loadData = async () => {
       try {
