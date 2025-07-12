@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, List } from 'antd';
+import { Card, List, Modal } from 'antd'; // Добавляем Modal из antd
 import { HeartFilled, HeartOutlined } from '@ant-design/icons'; 
 import { useNavigate } from "react-router-dom";
 import styles from './Favorites.module.css'
@@ -30,13 +30,14 @@ const Main: React.FC = () => {
   const [decks, setDecks] = useState<IDeckData[]>([]);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [loadingFavorites, setLoadingFavorites] = useState<{ [key: number]: boolean }>({});
+  const [confirmDeckId, setConfirmDeckId] = useState<number | null>(null);
   const navigate = useNavigate();
 
   const isLoading = decksLoading || favoritesLoading;
   const favoriteDecks = decks.filter(deck => favorites.includes(deck.id));
 
   useEffect(() => {
-    setActiveMenuKey('sidebar-favorites');
+    setActiveMenuKey('sidebar-home');
     
     const loadData = async () => {
       try {
@@ -84,22 +85,39 @@ const Main: React.FC = () => {
     }
   };
   
-  
   const toggleFavorite = async (deckId: number, e: React.MouseEvent) => {
     e.stopPropagation(); 
-    setLoadingFavorites(prev => ({ ...prev, [deckId]: true }));
-
-    try {
-      if (favorites.includes(deckId)) {
-        await handleDeleteFavorite(deckId);
-      } else {
+    
+    if (favorites.includes(deckId)) {
+      setConfirmDeckId(deckId);
+    } else {
+      setLoadingFavorites(prev => ({ ...prev, [deckId]: true }));
+      try {
         await handleAddFavorite(deckId);
+      } catch (error) {
+        console.error('Error adding favorite:', error);
+      } finally {
+        setLoadingFavorites(prev => ({ ...prev, [deckId]: false }));
       }
-    } catch (error) {
-      console.error('Error toggling favorite:', error);
-    } finally {
-      setLoadingFavorites(prev => ({ ...prev, [deckId]: false }));
     }
+  };
+
+  const confirmRemoveFavorite = async () => {
+    if (confirmDeckId === null) return;
+    
+    setLoadingFavorites(prev => ({ ...prev, [confirmDeckId]: true }));
+    try {
+      await handleDeleteFavorite(confirmDeckId);
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+    } finally {
+      setLoadingFavorites(prev => ({ ...prev, [confirmDeckId]: false }));
+      setConfirmDeckId(null);
+    }
+  };
+
+  const cancelRemoveFavorite = () => {
+    setConfirmDeckId(null);
   };
 
   const handleAddFavorite = async (deckId: number) => {
@@ -119,14 +137,26 @@ const Main: React.FC = () => {
 
   return (
     <div className={styles.mainContainer}>
+      <Modal
+        title="Подтверждение удаления"
+        open={confirmDeckId !== null}
+        onOk={confirmRemoveFavorite}
+        onCancel={cancelRemoveFavorite}
+        okText="Удалить"
+        cancelText="Отмена"
+        okButtonProps={{ danger: true }}
+      >
+        <p>Вы уверены, что хотите удалить эту колоду из избранного?</p>
+      </Modal>
+
       {isLoading ? (
         <div>Загрузка данных...</div>
       ) : error ? (
         <div >{error}</div>
-      ) : favoriteDecks.length > 0 ? ( 
+      ) : favoriteDecks.length > 0 ? (
         <List
           grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 4, xxl: 4 }}
-          dataSource={favoriteDecks} 
+          dataSource={favoriteDecks}
           renderItem={(deck) => (
             <List.Item>
               <Card
