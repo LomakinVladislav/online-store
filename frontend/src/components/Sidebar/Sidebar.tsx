@@ -10,8 +10,6 @@ import { Button, Menu, Layout } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useMenu  } from '../../contexts/MenuContext';
 
-const { Sider } = Layout;
-
 const SidebarComponent: React.FC = () => {
   const navigate = useNavigate();
   const { activeMenuKey, setActiveMenuKey } = useMenu();
