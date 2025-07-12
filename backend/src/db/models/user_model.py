@@ -17,3 +17,4 @@ class userModel(Base):
 
     decks = relationship("deckModel", back_populates="users")
     userdecks = relationship("userdeckModel", back_populates="users")
+    favorites_decks = relationship("favoritesDecksModel", back_populates="users", passive_deletes=True)

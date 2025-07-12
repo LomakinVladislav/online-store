@@ -10,7 +10,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from db.models import user_model, deck_model, userdeck_model, card_model
+from db.models import user_model, deck_model, userdeck_model, card_model, favorites_decks_model
 from db.database import Base
 
 config = context.config
