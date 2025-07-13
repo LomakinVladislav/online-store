@@ -52,7 +52,7 @@ const MyDecks: React.FC = () => {
   const fetchDecks = async () => {
     try {
       setDecksLoading(true);
-      const response = await api.get<IDeckData[]>('http://127.0.0.1:8000/decks');
+      const response = await api.get<IDeckData[]>('http://127.0.0.1:8000/decks/my_decks');
       setDecks(response.data);
     } catch (error) {
       console.error('Error fetching cards:', error);
@@ -160,7 +160,7 @@ const MyDecks: React.FC = () => {
           )}
         />
       ) : (
-        <div>Нет доступных колод</div>
+        <div>Вы еще не создали ни одной колоды</div>
       )}
     </div>
   )
