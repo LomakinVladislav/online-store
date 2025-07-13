@@ -29,13 +29,13 @@ const SidebarComponent: React.FC = () => {
       key: 'sidebar-home',
       icon: <HomeOutlined />,
       label: 'Главная',
-      onClick: () => handleMenuClick('sidebar-home', '/')
+      onClick: () => handleMenuClick('sidebar-home', '/main')
     },
     {
-      key: 'sidebar-decks',
+      key: 'sidebar-created_decks',
       icon: <BookOutlined />,
       label: 'Мои колоды',
-      onClick: () => handleMenuClick('sidebar-decks', '/decks')
+      onClick: () => handleMenuClick('sidebar-created_decks', '/created_decks')
     },
     {
       key: 'sidebar-favorites',

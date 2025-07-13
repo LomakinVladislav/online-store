@@ -4,11 +4,12 @@ import { App, ConfigProvider } from 'antd';
 import LayoutComponent from './components/Layout/Layout';
 import { lightThemeConfig, darkThemeConfig } from './styles/theme';
 import DeckContent from './components/DeckContent/DeckContent';
-import Main from './pages/Main/Main'
-import Authorization from './pages/Authorization/Authorization'
-import ExpiredSession from './components/ExpiredSession/ExpiredSession'
-import DeckCreation from './pages/DeckCreation/DeckCreation'
-import Favorites from './pages/Favorites/Favorites'
+import Main from './pages/Main/Main';
+import Authorization from './pages/Authorization/Authorization';
+import ExpiredSession from './components/ExpiredSession/ExpiredSession';
+import DeckCreation from './pages/DeckCreation/DeckCreation';
+import Favorites from './pages/Favorites/Favorites';
+import CreatedDecks from './pages/CreatedDecks/CreatedDecks';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 const AppComponent: React.FC = () => {
@@ -38,6 +39,7 @@ const AppComponent: React.FC = () => {
               <Route path="/expired_session" element={<ExpiredSession />} />
               <Route path="/deck_creation" element={<DeckCreation />} />
               <Route path="/favorites" element={<Favorites />} />
+              <Route path="/created_decks" element={<CreatedDecks />} />
               {/* <Route path="/profile" element={} /> */}
               {/* <Route path="/settings" element={} /> */}
               {/* <Route path="/search" element={} /> */}
