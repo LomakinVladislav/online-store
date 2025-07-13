@@ -54,8 +54,17 @@ const Favorites: React.FC = () => {
   const fetchDecks = async () => {
     try {
       setDecksLoading(true);
-      const response = await api.get<IDeckData[]>('http://127.0.0.1:8000/decks');
-      setDecks(response.data);
+      const [publicDecks, myDecks] = await Promise.all([
+        api.get<IDeckData[]>('http://127.0.0.1:8000/decks'),
+        api.get<IDeckData[]>('http://127.0.0.1:8000/decks/my_decks')
+      ]);
+  
+      const combinedDecks = [...publicDecks.data, ...myDecks.data];
+      const uniqueDecks = Array.from(
+        new Map(combinedDecks.map(deck => [deck.id, deck])).values()
+      );
+      
+      setDecks(uniqueDecks);
     } catch (error) {
       console.error('Error fetching cards:', error);
       setError('Не удалось загрузить карточки');
