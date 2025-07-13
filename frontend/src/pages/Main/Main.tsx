@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 import styles from './Main.module.css'
 import { useMenu  } from '../../contexts/MenuContext';
 import api from '../../api/api';
-import { isAxiosError } from 'axios';
+import { AxiosRequestConfig, isAxiosError } from 'axios';
+import { getValidToken } from '../../utils/auth';
+
 
 const { Meta } = Card;
 
@@ -20,6 +22,10 @@ interface IDeckData {
   is_public: boolean;
   difficulty: string;
   image_url: string;
+}
+
+interface ICustomAxiosConfig extends AxiosRequestConfig {
+  skipRedirect?: boolean;
 }
 
 const Main: React.FC = () => {
@@ -37,22 +43,21 @@ const Main: React.FC = () => {
   useEffect(() => {
     setActiveMenuKey('sidebar-home');
     
-    const loadData = async () => {
-      try {
-        await fetchDecks();
-        await fetchFavorites();
-      } catch (error) {
-        console.error("Error loading data:", error);
-      }
-    };
-
-    loadData();
+    fetchDecks();
+    
+    if (getValidToken()) {
+      fetchFavorites();
+    } else {
+      setFavoritesLoading(false);
+    }
   }, []);
 
   const fetchDecks = async () => {
     try {
       setDecksLoading(true);
-      const response = await api.get<IDeckData[]>('http://127.0.0.1:8000/decks');
+      const response = await api.get<IDeckData[]>('http://127.0.0.1:8000/decks', {
+        skipRedirect: true
+      } as ICustomAxiosConfig);
       setDecks(response.data);
     } catch (error) {
       console.error('Error fetching cards:', error);

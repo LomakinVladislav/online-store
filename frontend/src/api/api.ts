@@ -19,6 +19,9 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     } else {
+      if (config.skipRedirect) {
+        return config;
+      }
       redirectToWarning();
       return new Promise(() => {});
     }
@@ -34,6 +37,9 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      if (error.config?.skipRedirect) {
+        return Promise.reject(error);
+      }
       redirectToWarning();
       return new Promise(() => {});
     }
