@@ -73,3 +73,9 @@ async def get_deck_by_id(deck_id: int, session: Session):
     query = (select(cardModel).where(cardModel.deck_id == deck_id))
     result = await session.execute(query)
     return result.scalars().all()
+
+
+async def get_my_decks(user_id: int, session: Session):
+    query = select(deckModel).where(deckModel.creator_user_id == user_id)
+    result = await session.execute(query)
+    return result.scalars().all()
