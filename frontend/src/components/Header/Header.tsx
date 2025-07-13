@@ -1,8 +1,9 @@
 import { Layout, Menu, Switch} from 'antd';
 import { useMenu } from '../../contexts/MenuContext';
-import { UserOutlined, PlusCircleOutlined, SettingOutlined, LogoutOutlined  } from '@ant-design/icons';
+import { UserOutlined, PlusCircleOutlined, SettingOutlined, LogoutOutlined, LoginOutlined  } from '@ant-design/icons';
 import styles from './Header.module.css'
 import { useNavigate } from 'react-router-dom';
+import { getValidToken } from '../../utils/auth';
 
 
 type HeaderProps = {
@@ -10,7 +11,15 @@ type HeaderProps = {
   toggleTheme: () => void;
 };
 
-const { Header} = Layout;
+interface MenuItem {
+  key: string;
+  icon: React.ReactNode;
+  label: React.ReactNode;
+  onClick?: () => void;
+  children?: MenuItem[];
+}
+
+const { Header } = Layout;
 
 const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
   const navigate = useNavigate();
@@ -20,31 +29,46 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
     setActiveMenuKey(key);
     navigate(path);
   };
+  const token = getValidToken();
 
-  const items = [
-    {
-      key: 'header-profile',
-      icon: <UserOutlined />,
-      label: 'Профиль',
-      children: [
-        { 
-          key: 'header-profile-settings', 
-          icon: <SettingOutlined />, 
-          label: 'Настройки',
-          onClick: () => handleNavigation('header-profile', '/settings'),
-        },
-        { 
-          key: 'header-profile-quit', 
-          icon: <LogoutOutlined />, 
-          label: 'Выйти',
-          onClick: () => {
-            localStorage.removeItem('access_token');
-            navigate('/auth');
-            return;
-          }
-        },
-      ],
-    },
+  const profileMenu: MenuItem = {
+    key: 'header-profile',
+    icon: <UserOutlined />,
+    label: 'Профиль',
+    children: []
+  };
+
+  if (token) {
+    profileMenu.children = [
+      { 
+        key: 'header-profile-settings', 
+        icon: <SettingOutlined />, 
+        label: 'Настройки',
+        onClick: () => handleNavigation('header-profile', '/settings'),
+      },
+      { 
+        key: 'header-profile-quit', 
+        icon: <LogoutOutlined />, 
+        label: 'Выйти',
+        onClick: () => {
+          localStorage.removeItem('access_token');
+          navigate('/auth');
+        }
+      },
+    ];
+  } else {
+    profileMenu.children = [
+      { 
+        key: 'header-profile-login', 
+        icon: <LoginOutlined />, 
+        label: 'Войти',
+        onClick: () => navigate('/auth')
+      }
+    ];
+  }
+
+  const items: MenuItem[] = [
+    profileMenu,
     {
       key: 'header-create',
       icon: <PlusCircleOutlined />,
@@ -52,6 +76,7 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
       onClick: () => handleNavigation('header-create', '/deck_creation')
     }
   ];
+  
   return (
       <Header
         style={{
