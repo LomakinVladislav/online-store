@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, List } from 'antd';
+import { Card, List, Button } from 'antd';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons'; 
 import { useNavigate } from "react-router-dom";
 import styles from './MyDecks.module.css'
@@ -160,7 +160,20 @@ const MyDecks: React.FC = () => {
           )}
         />
       ) : (
-        <div>Вы еще не создали ни одной колоды</div>
+        <div className={styles.warningContainer}>
+          <h1>Вы еще не создали ни одной колоды</h1>
+          <Button
+          type="primary" 
+          style={{ marginBottom: 16 }}
+          onClick={
+            () => {
+              setActiveMenuKey('header-create');
+              navigate('/deck_creation')
+            }
+            }>
+              Создать
+          </Button>
+        </div>  
       )}
     </div>
   )

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, List, Modal } from 'antd'; // Добавляем Modal из antd
+import { Button, Card, List, Modal } from 'antd'; // Добавляем Modal из antd
 import { HeartFilled, HeartOutlined } from '@ant-design/icons'; 
 import { useNavigate } from "react-router-dom";
 import styles from './Favorites.module.css'
@@ -200,7 +200,20 @@ const Favorites: React.FC = () => {
           )}
         />
       ) : (
-        <div>В избранном пока ничего нет</div>
+        <div className={styles.warningContainer}>
+          <h1>В вашем избранном пока нет ни одной колоды</h1>
+          <Button
+          type="primary" 
+          style={{ marginBottom: 16 }}
+          onClick={
+            () => {
+              setActiveMenuKey('sidebar-home');
+              navigate('/main')
+            }
+            }>
+              На главную
+          </Button>
+        </div>  
       )}
     </div>
   )
