@@ -1,0 +1,7 @@
+
+
+const Settings: React.FC = () => {
+    return( null );
+}
+
+export default Settings;

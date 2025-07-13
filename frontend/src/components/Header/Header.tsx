@@ -1,6 +1,6 @@
 import { Layout, Menu, Switch} from 'antd';
 import { useMenu } from '../../contexts/MenuContext';
-import { UserOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { UserOutlined, PlusCircleOutlined, SettingOutlined, LogoutOutlined  } from '@ant-design/icons';
 import styles from './Header.module.css'
 import { useNavigate } from 'react-router-dom';
 
@@ -26,7 +26,24 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
       key: 'header-profile',
       icon: <UserOutlined />,
       label: 'Профиль',
-      onClick: () => handleNavigation('header-profile', '/profile')
+      children: [
+        { 
+          key: 'header-profile-settings', 
+          icon: <SettingOutlined />, 
+          label: 'Настройки',
+          onClick: () => handleNavigation('header-profile', '/settings'),
+        },
+        { 
+          key: 'header-profile-quit', 
+          icon: <LogoutOutlined />, 
+          label: 'Выйти',
+          onClick: () => {
+            localStorage.removeItem('access_token');
+            navigate('/auth');
+            return;
+          }
+        },
+      ],
     },
     {
       key: 'header-create',
