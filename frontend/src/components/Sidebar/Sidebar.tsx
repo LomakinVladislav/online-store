@@ -32,10 +32,10 @@ const SidebarComponent: React.FC = () => {
       onClick: () => handleMenuClick('sidebar-home', '/main')
     },
     {
-      key: 'sidebar-created_decks',
+      key: 'sidebar-my_decks',
       icon: <BookOutlined />,
       label: 'Мои колоды',
-      onClick: () => handleMenuClick('sidebar-created_decks', '/created_decks')
+      onClick: () => handleMenuClick('sidebar-my_decks', '/my_decks')
     },
     {
       key: 'sidebar-favorites',

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, List } from 'antd';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons'; 
 import { useNavigate } from "react-router-dom";
-import styles from './CreatedDecks.module.css'
+import styles from './MyDecks.module.css'
 import { useMenu  } from '../../contexts/MenuContext';
 import api from '../../api/api';
 import { isAxiosError } from 'axios';
@@ -22,7 +22,7 @@ interface IDeckData {
   image_url: string;
 }
 
-const Main: React.FC = () => {
+const MyDecks: React.FC = () => {
   const { setActiveMenuKey } = useMenu();
   const [decksLoading, setDecksLoading] = useState<boolean>(true);
   const [favoritesLoading, setFavoritesLoading] = useState<boolean>(true);
@@ -35,7 +35,7 @@ const Main: React.FC = () => {
   const isLoading = decksLoading || favoritesLoading;
 
   useEffect(() => {
-    setActiveMenuKey('sidebar-created_decks');
+    setActiveMenuKey('sidebar-my_decks');
     
     const loadData = async () => {
       try {
@@ -166,4 +166,4 @@ const Main: React.FC = () => {
   )
 }
 
-export default Main;
+export default MyDecks;

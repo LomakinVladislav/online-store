@@ -9,7 +9,7 @@ import Authorization from './pages/Authorization/Authorization';
 import ExpiredSession from './components/ExpiredSession/ExpiredSession';
 import DeckCreation from './pages/DeckCreation/DeckCreation';
 import Favorites from './pages/Favorites/Favorites';
-import CreatedDecks from './pages/CreatedDecks/CreatedDecks';
+import MyDecks from './pages/MyDecks/MyDecks';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 const AppComponent: React.FC = () => {
@@ -39,7 +39,7 @@ const AppComponent: React.FC = () => {
               <Route path="/expired_session" element={<ExpiredSession />} />
               <Route path="/deck_creation" element={<DeckCreation />} />
               <Route path="/favorites" element={<Favorites />} />
-              <Route path="/created_decks" element={<CreatedDecks />} />
+              <Route path="/my_decks" element={<MyDecks />} />
               {/* <Route path="/profile" element={} /> */}
               {/* <Route path="/settings" element={} /> */}
               {/* <Route path="/search" element={} /> */}

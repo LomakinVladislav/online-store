@@ -22,7 +22,7 @@ interface IDeckData {
   image_url: string;
 }
 
-const Main: React.FC = () => {
+const Favorites: React.FC = () => {
   const { setActiveMenuKey } = useMenu();
   const [decksLoading, setDecksLoading] = useState<boolean>(true);
   const [favoritesLoading, setFavoritesLoading] = useState<boolean>(true);
@@ -197,4 +197,4 @@ const Main: React.FC = () => {
   )
 }
 
-export default Main;
+export default Favorites;
