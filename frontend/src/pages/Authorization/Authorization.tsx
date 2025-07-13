@@ -5,6 +5,7 @@ import { Button, Checkbox, Form, Input, Switch, Layout, message, Space, Radio } 
 import styles from "./Authorization.module.css"
 import axios from 'axios';
 
+
 type LoginFieldType = {
   username?: string;
   password?: string;
@@ -150,13 +151,24 @@ type AuthorizationProps = {
 
     return (
       <Layout style={{ minHeight: "100vh" }}>
-      <div className={styles.themeToggle}>
-        <Switch
-          checked={isDarkMode}
-          onChange={toggleTheme}
-          checkedChildren="🌙"
-          unCheckedChildren="☀️"
-        />
+      <div className={styles.logoAndToggleContainer}>
+        <div className={styles.themeToggle}>
+          <Switch
+            checked={isDarkMode}
+            onChange={toggleTheme}
+            checkedChildren="🌙"
+            unCheckedChildren="☀️"
+          />  
+        </div>
+
+        <div 
+          className={`${styles.logoContainer} ${
+            isDarkMode ? styles.logoContainerDark : styles.logoContainerLight
+          }`}
+          onClick={() => navigate('/main')}
+        >
+          <span className={styles.logoText}>Language Trainer</span>
+        </div>
       </div>
       <div className={styles.authorizationContainer}>
         <h1>{formType === 'login' ? 'Вход' : 'Регистрация'}</h1>

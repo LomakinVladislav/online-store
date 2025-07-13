@@ -16,7 +16,7 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
   const navigate = useNavigate();
   const { activeMenuKey, setActiveMenuKey } = useMenu();
 
-  const handleMenuClick = (key: string, path: string) => {
+  const handleNavigation = (key: string, path: string) => {
     setActiveMenuKey(key);
     navigate(path);
   };
@@ -26,13 +26,13 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
       key: 'header-profile',
       icon: <UserOutlined />,
       label: 'Профиль',
-      onClick: () => handleMenuClick('header-profile', '/profile')
+      onClick: () => handleNavigation('header-profile', '/profile')
     },
     {
       key: 'header-create',
       icon: <PlusCircleOutlined />,
       label: 'Создать',
-      onClick: () => handleMenuClick('header-create', '/deck_creation')
+      onClick: () => handleNavigation('header-create', '/deck_creation')
     }
   ];
   return (
@@ -57,7 +57,16 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
           unCheckedChildren="☀️"
         /> 
       </div>
-        <div className="demo-logo" />
+
+      <div 
+        className={`${styles.logoContainer} ${
+          isDarkMode ? styles.logoContainerDark : styles.logoContainerLight
+        }`}
+        onClick={() => handleNavigation('sidebar-home', '/main')}
+      >
+        <span className={styles.logoText}>Language Trainer</span>
+      </div>
+
         <Menu
           mode="horizontal"
           defaultSelectedKeys={['1']}

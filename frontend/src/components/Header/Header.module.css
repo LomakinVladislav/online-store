@@ -1,6 +1,6 @@
 .switchContainer {
-    margin-bottom: 1px;
     padding-left: 20px;
+    height: 100%;
   }
   
 .switchContainerDark {
@@ -12,3 +12,31 @@
     background: #ffffff;
     border-bottom: 1px solid #0505050f;
 }
+
+.logoContainer {
+    cursor: pointer;
+    height: 100%;
+    padding-left: 20px;
+}
+
+.logoContainerLight {
+    background: #ffffff;
+    border-bottom: 1px solid #0505050f;
+}
+
+.logoContainerDark {
+    background: #2e2e2e;
+    border-bottom: 1px solid #f6f6f624;
+}
+
+
+.logoText {
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+}
+
+@media (max-width: 500px) {
+.logoText {
+    display: none;
+}}
