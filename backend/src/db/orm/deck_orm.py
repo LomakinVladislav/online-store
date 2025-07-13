@@ -64,7 +64,7 @@ async def add_deck(data: DeckAddSchema, session: Session, creator_user_id):
 
 
 async def get_decks(session: Session):
-    query = select(deckModel)
+    query = select(deckModel).where(deckModel.is_public == True)
     result = await session.execute(query)
     return result.scalars().all()
 
