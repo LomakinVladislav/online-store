@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, status
 from auth.schemas import UserInDBSchema
 from fastapi import APIRouter, Depends
 from auth.dependencies import get_current_active_user
-from db.orm.deck_orm import add_deck_with_cards, get_decks, get_deck_by_id, get_my_decks
+from db.orm.deck_orm import add_deck_with_cards, get_decks, get_deck_by_id, get_my_decks, get_search_decks
 from db.orm.favorites_decks_orm import add_favorite_deck, delete_favorite_deck, get_favorite_decks
 from db.schemas.deck_schemas import DeckWithCardsCreateSchema
 from db.schemas.favorites_decks_schemas import FavoritesDecksSchema
@@ -65,4 +65,10 @@ async def get_deck_by_id_api(deck_id: int, session: SessionDep, current_user: Us
 async def get_my_decks_api(session: SessionDep, current_user: UserInDBSchema = Depends(get_current_active_user)):
     user_id = current_user.id 
     result = await get_my_decks(user_id=user_id, session=session)
+    return result
+
+
+@router.get("/decks/search/")
+async def get_search_decks_api(query: str, session: SessionDep):
+    result = await get_search_decks(query=query, session=session)
     return result

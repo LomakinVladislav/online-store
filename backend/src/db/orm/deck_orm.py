@@ -1,7 +1,6 @@
 # Файл с описанием функций (методов) для создания запросов и команд базе данных
 from sqlalchemy.orm import Session
-from sqlalchemy import select
-
+from sqlalchemy import select, or_, select
 from db.models.deck_model import deckModel
 from db.models.card_model import cardModel
 from db.schemas.deck_schemas import DeckWithCardsCreateSchema, DeckAddSchema
@@ -78,4 +77,22 @@ async def get_deck_by_id(deck_id: int, session: Session):
 async def get_my_decks(user_id: int, session: Session):
     query = select(deckModel).where(deckModel.creator_user_id == user_id)
     result = await session.execute(query)
+    return result.scalars().all()
+
+
+async def get_search_decks(query: str, session: Session):
+    if not query.strip():
+        return []
+    
+    search_pattern = f"%{query}%"
+    
+    stmt = select(deckModel).where(
+        or_(
+            deckModel.title.ilike(search_pattern),
+            deckModel.description.ilike(search_pattern),
+            deckModel.category.ilike(search_pattern)
+        )
+    )
+    
+    result = await session.execute(stmt)
     return result.scalars().all()
