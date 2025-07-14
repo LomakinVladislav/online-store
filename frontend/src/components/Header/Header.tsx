@@ -77,8 +77,15 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
       key: 'header-create',
       icon: <PlusCircleOutlined />,
       label: 'Создать',
-      onClick: () => handleNavigation('header-create', '/deck_creation')
-    }
+      onClick: () => {
+        if (token) {
+          handleNavigation('header-create', '/deck_creation')
+        }
+        else {
+          handleNavigation('null', '/expired_session')
+        }
+      }
+    },
   ];
 
   const handleSearch = () => {
