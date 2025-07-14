@@ -42,14 +42,24 @@
 }}
 
 .searchContainer {
-    flex: 1;
-    max-width: 600px;
-    margin: 0 20px;
-  }
+    height: 100%;
+    padding-left: 20px;
+}
+
+.searchContainerLight {
+    background: #ffffff;
+    border-bottom: 1px solid #0505050f;
+}
+
+.searchContainerDark {
+    background: #2e2e2e;
+    border-bottom: 1px solid #f6f6f624;
+}
+
   
-  .searchButton {
+.searchButton {
     background: none;
     border: none;
     cursor: pointer;
     padding: 5px;
-  }
+}

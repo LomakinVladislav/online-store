@@ -85,7 +85,6 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
     const trimmedValue = searchValue.trim();
     if (trimmedValue) {
       navigate(`/search?query=${encodeURIComponent(trimmedValue)}`);
-      setSearchValue('');
     }
   };
 
@@ -128,7 +127,9 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
       </div>
 
       {/* Поисковая строка */}
-      <div className={styles.searchContainer}>
+      <div className={`${styles.searchContainer} ${
+        isDarkMode ? styles.searchContainerDark : styles.searchContainerLight
+      }`}>
         <Input
           placeholder="Поиск колод"
           value={searchValue}
