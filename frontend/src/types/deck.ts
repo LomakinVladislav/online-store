@@ -9,4 +9,4 @@ export interface IDeckData {
     is_public: boolean;
     difficulty: string;
     image_url: string;
-  }
+}
