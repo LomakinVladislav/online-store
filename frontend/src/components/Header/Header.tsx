@@ -4,6 +4,9 @@ import { UserOutlined, PlusCircleOutlined, SettingOutlined, LogoutOutlined, Logi
 import styles from './Header.module.css'
 import { useNavigate } from 'react-router-dom';
 import { getValidToken } from '../../utils/auth';
+import { Input } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { useState } from 'react';
 
 
 type HeaderProps = {
@@ -22,6 +25,7 @@ interface MenuItem {
 const { Header } = Layout;
 
 const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
+  const [searchValue, setSearchValue] = useState('');
   const navigate = useNavigate();
   const { activeMenuKey, setActiveMenuKey } = useMenu();
 
@@ -76,6 +80,20 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
       onClick: () => handleNavigation('header-create', '/deck_creation')
     }
   ];
+
+  const handleSearch = () => {
+    const trimmedValue = searchValue.trim();
+    if (trimmedValue) {
+      navigate(`/search?query=${encodeURIComponent(trimmedValue)}`);
+      setSearchValue('');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
   
   return (
       <Header
@@ -107,6 +125,22 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
         onClick={() => handleNavigation('sidebar-home', '/main')}
       >
         <span className={styles.logoText}>Language Trainer</span>
+      </div>
+
+      {/* Поисковая строка */}
+      <div className={styles.searchContainer}>
+        <Input
+          placeholder="Поиск колод"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          onKeyUp={handleKeyPress}
+          suffix={
+            <SearchOutlined 
+              onClick={handleSearch} 
+              style={{ cursor: 'pointer' }}
+            />
+          }
+        />
       </div>
 
         <Menu
