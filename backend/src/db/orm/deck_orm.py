@@ -4,15 +4,14 @@ from sqlalchemy import select, or_, select
 from db.models.deck_model import deckModel
 from db.models.card_model import cardModel
 from db.schemas.deck_schemas import DeckWithCardsCreateSchema, DeckAddSchema
+from db.schemas.card_shemas import CardCreateSchema
 
 
 async def add_deck_with_cards(data: DeckWithCardsCreateSchema, session: Session, creator_user_id: int):
-    # Обрабатываем обложку колоды
     deck_image = "https://foni.papik.pro/uploads/posts/2024-10/foni-papik-pro-rxs7-p-kartinki-slon-dlya-detei-na-prozrachnom-fo-1.png"
     if data.deck.image_url.strip():
         deck_image = data.deck.image_url
     
-    # Создаем колоду
     new_deck = deckModel(
         creator_user_id=creator_user_id,
         title=data.deck.title,
@@ -24,9 +23,8 @@ async def add_deck_with_cards(data: DeckWithCardsCreateSchema, session: Session,
     )
     
     session.add(new_deck)
-    await session.flush()  # Получаем ID колоды без коммита
+    await session.flush()
     
-    # Создаем карточки
     for card_data in data.cards:
         new_card = cardModel(
             deck_id=new_deck.id,
@@ -41,9 +39,50 @@ async def add_deck_with_cards(data: DeckWithCardsCreateSchema, session: Session,
     
     return {
         "ok": True,
-        # "deck_id": new_deck.id,
         "cards_count": len(data.cards)
     }
+
+
+async def get_deck_information_by_id(deck_id: int, creator_user_id: int, session: Session) -> DeckWithCardsCreateSchema:
+    """
+    Возвращает колоду и связанные карточки в формате DeckWithCardsCreateSchema
+    для использования при редактировании колоды
+    """
+    deck_query = await session.execute(
+        select(deckModel).where(
+            (deckModel.id == deck_id) &
+            (deckModel.creator_user_id == creator_user_id)
+        )
+    )
+    deck = deck_query.scalar_one_or_none()
+    
+    if not deck:
+        return None
+    
+    cards_query = await session.execute(
+        select(cardModel).where(cardModel.deck_id == deck_id)
+    )
+    cards = cards_query.scalars().all()
+    
+    return DeckWithCardsCreateSchema(
+        deck=DeckAddSchema(
+            title=deck.title,
+            category=deck.category,
+            description=deck.description,
+            image_url=deck.image_url,
+            is_public=deck.is_public,
+            difficulty=deck.difficulty
+        ),
+        cards=[
+            CardCreateSchema(
+                front_text=card.front_text,
+                back_text=card.back_text,
+                transcription=card.transcription,
+                image_url=card.image_url
+            )
+            for card in cards
+        ]
+    )
 
 
 async def add_deck(data: DeckAddSchema, session: Session, creator_user_id):

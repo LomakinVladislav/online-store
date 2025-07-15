@@ -33,7 +33,7 @@ interface ApiError {
 }
 
 const DeckEdit: React.FC = () => {
-    const { deckID } = useParams<{ deckID: string }>();
+    const { deckId } = useParams<{ deckId: string }>();
     const [form] = Form.useForm<FormValues>();
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
@@ -46,7 +46,7 @@ const DeckEdit: React.FC = () => {
     useEffect(() => {
         const fetchDeckData = async () => {
         try {
-            const response = await api.get(`/decks/${deckID}/information/`);
+            const response = await api.get(`/decks/${deckId}/information/`);
             const { deck, cards: deckCards } = response.data;
             
             form.setFieldsValue({
@@ -79,7 +79,7 @@ const DeckEdit: React.FC = () => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-    }, [deckID, form, messageApi]);
+    }, [deckId, form, messageApi]);
 
 const addCard = () => {
     setCards([...cards, { front_text: '', back_text: '', image_url: '', transcription: '' }]);
@@ -149,12 +149,12 @@ const handleSubmit = async (values: FormValues) => {
         }))
       };
   
-      const response = await api.put(`/decks/${deckID}/`, payload);
+      const response = await api.put(`/decks/${deckId}/`, payload);
       
         if (response.status === 200) {
             messageApi.success('Набор успешно обновлен');
             timerRef.current = setTimeout(() => {
-            navigate(`/decks/${deckID}`);
+            navigate(`/decks/${deckId}`);
             }, 1500);
         }
     } catch (err) {
