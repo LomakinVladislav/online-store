@@ -7,8 +7,6 @@ class CardAddSchema(BaseModel):
     transcription: str
     image_url: str
 
-class CardSchema(CardAddSchema):
-    id: int
 
 # Схема для создания карточек вместе с новой колодой
 class CardCreateSchema(BaseModel):
@@ -16,3 +14,7 @@ class CardCreateSchema(BaseModel):
     back_text: str
     transcription: str
     image_url: str
+
+
+class CardResponseSchema(CardCreateSchema):
+    id: int

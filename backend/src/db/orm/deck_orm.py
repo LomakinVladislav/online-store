@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, or_, select
 from db.models.deck_model import deckModel
 from db.models.card_model import cardModel
-from db.schemas.deck_schemas import DeckWithCardsCreateSchema, DeckAddSchema
-from db.schemas.card_shemas import CardCreateSchema
+from db.schemas.deck_schemas import DeckWithCardsCreateSchema, DeckAddSchema, DeckWithCardsResponseSchema, DeckResponseSchema
+from db.schemas.card_shemas import CardResponseSchema
 
 
 async def add_deck_with_cards(data: DeckWithCardsCreateSchema, session: Session, creator_user_id: int):
@@ -43,7 +43,7 @@ async def add_deck_with_cards(data: DeckWithCardsCreateSchema, session: Session,
     }
 
 
-async def get_deck_information_by_id(deck_id: int, creator_user_id: int, session: Session) -> DeckWithCardsCreateSchema:
+async def get_deck_information_by_id(deck_id: int, creator_user_id: int, session: Session) -> DeckWithCardsResponseSchema:
     """
     Возвращает колоду и связанные карточки в формате DeckWithCardsCreateSchema
     для использования при редактировании колоды
@@ -64,8 +64,9 @@ async def get_deck_information_by_id(deck_id: int, creator_user_id: int, session
     )
     cards = cards_query.scalars().all()
     
-    return DeckWithCardsCreateSchema(
-        deck=DeckAddSchema(
+    return DeckWithCardsResponseSchema(
+        deck=DeckResponseSchema(
+            id=deck.id,
             title=deck.title,
             category=deck.category,
             description=deck.description,
@@ -74,7 +75,8 @@ async def get_deck_information_by_id(deck_id: int, creator_user_id: int, session
             difficulty=deck.difficulty
         ),
         cards=[
-            CardCreateSchema(
+            CardResponseSchema(
+                id=card.id,
                 front_text=card.front_text,
                 back_text=card.back_text,
                 transcription=card.transcription,
