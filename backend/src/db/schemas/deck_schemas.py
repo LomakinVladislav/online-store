@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List
-from db.schemas.card_shemas import CardCreateSchema, CardResponseSchema
+from db.schemas.card_shemas import CardCreateSchema, CardResponseSchema, CardUpdateSchema
 
 class DeckAddSchema(BaseModel):
     title: str
@@ -9,6 +9,10 @@ class DeckAddSchema(BaseModel):
     image_url: str
     is_public: bool
     difficulty: int
+
+
+class DeckUpdateSchema(DeckAddSchema):
+    pass
 
 
 class DeckResponseSchema(DeckAddSchema):
@@ -31,3 +35,7 @@ class DeckWithCardsResponseSchema(BaseModel):
     deck: DeckResponseSchema
     cards: List[CardResponseSchema]
 
+
+class DeckWithCardsUpdateSchema(BaseModel):
+    deck: DeckUpdateSchema
+    cards: List[CardUpdateSchema]

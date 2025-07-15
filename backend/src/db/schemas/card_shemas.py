@@ -18,3 +18,7 @@ class CardCreateSchema(BaseModel):
 
 class CardResponseSchema(CardCreateSchema):
     id: int
+
+
+class CardUpdateSchema(CardResponseSchema):
+    pass

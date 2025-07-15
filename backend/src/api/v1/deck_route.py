@@ -3,9 +3,9 @@ from fastapi import APIRouter, HTTPException, status
 from auth.schemas import UserInDBSchema
 from fastapi import APIRouter, Depends
 from auth.dependencies import get_current_active_user
-from db.orm.deck_orm import add_deck_with_cards, get_decks, get_deck_by_id, get_my_decks, get_search_decks, get_deck_information_by_id
+from db.orm.deck_orm import add_deck_with_cards, get_decks, get_deck_by_id, get_my_decks, get_search_decks, get_deck_information_by_id, update_deck_with_cards
 from db.orm.favorites_decks_orm import add_favorite_deck, delete_favorite_deck, get_favorite_decks
-from db.schemas.deck_schemas import DeckWithCardsCreateSchema, DeckWithCardsResponseSchema
+from db.schemas.deck_schemas import DeckWithCardsCreateSchema, DeckWithCardsResponseSchema, DeckWithCardsUpdateSchema
 from db.schemas.favorites_decks_schemas import FavoritesDecksSchema
 from api.v1.common_route import SessionDep
 
@@ -23,10 +23,32 @@ async def add_deck_api(
     data: DeckWithCardsCreateSchema, 
     session: SessionDep, 
     current_user: UserInDBSchema = Depends(get_current_active_user)
-    )  -> List[FavoritesDecksSchema] :
+    )  -> List[FavoritesDecksSchema] : # Удалить List[FavoritesDecksSchema]? это бред какой-то зачем оно здесь
     creator_user_id = current_user.id 
     result = await add_deck_with_cards(data=data, session=session, creator_user_id=creator_user_id)
     return result
+
+
+@router.put("/decks/{deck_id}/")
+async def update_deck_with_cards_api(
+    deck_id: int,
+    data: DeckWithCardsUpdateSchema, 
+    session: SessionDep, 
+    current_user: UserInDBSchema = Depends(get_current_active_user)
+    ):
+    creator_user_id = current_user.id 
+    result = await update_deck_with_cards(
+        deck_id=deck_id,
+        data=data,
+        session=session,
+        creator_user_id=creator_user_id
+    )
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Deck not found or you don't have permission"
+        )
+    return {"ok": True, "updated_cards": result}
 
 
 @router.get("/decks/{deck_id}/information", response_model=DeckWithCardsResponseSchema)

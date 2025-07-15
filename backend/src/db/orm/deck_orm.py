@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, or_, select
 from db.models.deck_model import deckModel
 from db.models.card_model import cardModel
-from db.schemas.deck_schemas import DeckWithCardsCreateSchema, DeckAddSchema, DeckWithCardsResponseSchema, DeckResponseSchema
+from db.schemas.deck_schemas import DeckWithCardsCreateSchema, DeckWithCardsUpdateSchema, DeckWithCardsResponseSchema, DeckResponseSchema, DeckAddSchema
 from db.schemas.card_shemas import CardResponseSchema
 
 
@@ -85,6 +85,61 @@ async def get_deck_information_by_id(deck_id: int, creator_user_id: int, session
             for card in cards
         ]
     )
+
+
+async def update_deck_with_cards(deck_id: int, data: DeckWithCardsUpdateSchema, session: Session, creator_user_id: int
+) -> int:
+    deck_query = await session.execute(
+        select(deckModel).where(
+            (deckModel.id == deck_id) &
+            (deckModel.creator_user_id == creator_user_id)
+        ))
+    deck = deck_query.scalar_one_or_none()
+    if not deck:
+        return None
+    
+    deck.title = data.deck.title
+    deck.category = data.deck.category
+    deck.description = data.deck.description
+    deck.image_url = data.deck.image_url or "https://foni.papik.pro/uploads/posts/2024-10/foni-papik-pro-rxs7-p-kartinki-slon-dlya-detei-na-prozrachnom-fo-1.png"
+    deck.is_public = data.deck.is_public
+    deck.difficulty = data.deck.difficulty
+    
+    cards_query = await session.execute(
+        select(cardModel).where(cardModel.deck_id == deck_id))
+    existing_cards = cards_query.scalars().all()
+    existing_card_ids = {card.id for card in existing_cards}
+    
+    updated_card_ids = set()
+    cards_to_add = []
+    
+    for card_data in data.cards:
+        if card_data.id > 0 and card_data.id in existing_card_ids:
+            card = next(c for c in existing_cards if c.id == card_data.id)
+            card.front_text = card_data.front_text
+            card.back_text = card_data.back_text
+            card.transcription = card_data.transcription
+            card.image_url = card_data.image_url
+            updated_card_ids.add(card_data.id)
+        elif card_data.id <= 0: 
+            new_card = cardModel(
+                deck_id=deck_id,
+                front_text=card_data.front_text,
+                back_text=card_data.back_text,
+                transcription=card_data.transcription,
+                image_url=card_data.image_url
+            )
+            cards_to_add.append(new_card)
+    
+    cards_to_remove = [card for card in existing_cards if card.id not in updated_card_ids]
+    for card in cards_to_remove:
+        await session.delete(card)
+    
+    session.add_all(cards_to_add)
+    
+    await session.commit()
+    return len(data.cards)
+
 
 
 async def add_deck(data: DeckAddSchema, session: Session, creator_user_id):
