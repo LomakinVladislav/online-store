@@ -11,6 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const { TextArea } = Input;
 
 interface FormValues {
+    id: number;
     title: string;
     privacy: 'public' | 'private';
     image_url: string;
@@ -19,8 +20,18 @@ interface FormValues {
     difficulty: number;
 }
 
+interface DeckType {
+  id: number;
+  title: string;
+  category: string;
+  description: string;
+  image_url: string;
+  is_public: boolean;
+  difficulty: number;
+}
+
 interface CardType {
-    id?: number;
+    id: number;
     front_text: string;
     back_text: string;
     transcription: string;
@@ -32,7 +43,7 @@ interface ApiError {
     [key: string]: any;
 }
 
-const DeckEdit: React.FC = () => {
+const DeckEditing: React.FC = () => {
     const { deckId } = useParams<{ deckId: string }>();
     const [form] = Form.useForm<FormValues>();
     const [loading, setLoading] = useState(false);
@@ -40,7 +51,9 @@ const DeckEdit: React.FC = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const nextTempId = useRef(-1);
 
+    const [deckData, setDeckData] = useState<DeckType | null>(null);
     const [cards, setCards] = useState<CardType[]>([]);
 
     useEffect(() => {
@@ -49,7 +62,9 @@ const DeckEdit: React.FC = () => {
             const response = await api.get(`/decks/${deckId}/information/`);
             const { deck, cards: deckCards } = response.data;
             
+            setDeckData(deck);
             form.setFieldsValue({
+                id: deck.id,
                 title: deck.title,
                 privacy: deck.is_public ? 'public' : 'private',
                 image_url: deck.image_url,
@@ -58,13 +73,7 @@ const DeckEdit: React.FC = () => {
                 difficulty: deck.difficulty,
             });
         
-            setCards(deckCards.map((card: any) => ({
-                id: card.id,
-                front_text: card.front_text,
-                back_text: card.back_text,
-                transcription: card.transcription,
-                image_url: card.image_url,
-            })));
+            setCards(deckCards);
         } catch (err) {
             const error = err as AxiosError<ApiError>;
             messageApi.error('Ошибка загрузки данных: ' + (error.response?.data?.detail || error.message));
@@ -72,7 +81,6 @@ const DeckEdit: React.FC = () => {
             setFetching(false);
         }
     };
-      
 
     fetchDeckData();
 
@@ -82,7 +90,14 @@ const DeckEdit: React.FC = () => {
     }, [deckId, form, messageApi]);
 
 const addCard = () => {
-    setCards([...cards, { front_text: '', back_text: '', image_url: '', transcription: '' }]);
+    const newId = nextTempId.current--;
+    setCards([...cards, { 
+        id: newId,
+        front_text: '', 
+        back_text: '', 
+        transcription: '', 
+        image_url: '' 
+    }]);
 };
 
 const removeCard = (index: number) => {
@@ -99,8 +114,13 @@ const updateCard = (index: number, field: keyof CardType, value: string) => {
 };
 
 const isValidUrl = (url: string) => {
-    try { new URL(url); return true; } 
-    catch { return false; }
+    if (!url.trim()) return true;
+    try { 
+        new URL(url); 
+        return true; 
+    } catch { 
+        return false; 
+    }
 };
 
 const validateCards = (): boolean => {
@@ -108,17 +128,15 @@ const validateCards = (): boolean => {
       const card = cards[i];
       const errors = [];
       
-      if (!card.front_text.trim()) errors.push("Слово");
-      if (!card.back_text.trim()) errors.push("Перевод");
-      if (!card.transcription.trim()) errors.push("Транскрипция");
-      if (!card.image_url.trim()) errors.push("Изображение");
+      if (!card.front_text.trim()) errors.push("Текст лицевой стороны");
+      if (!card.back_text.trim()) errors.push("Текст обратной стороны");
       
       if (errors.length > 0) {
-        messageApi.error(`Заполните поля в карточке ${i + 1}: ${errors.join(", ")}`);
+        messageApi.error(`Заполните обязательные поля в карточке ${i + 1}: ${errors.join(", ")}`);
         return false;
       }
       
-      if (card.image_url.trim() && !isValidUrl(card.image_url)) {
+      if (!isValidUrl(card.image_url)) {
         messageApi.error(`Некорректный URL изображения в карточке ${i + 1}`);
         return false;
       }
@@ -127,12 +145,13 @@ const validateCards = (): boolean => {
 };
 
 const handleSubmit = async (values: FormValues) => {
-    if (!validateCards()) return;
+    if (!validateCards() || !deckData) return;
     
     try {
       setLoading(true);
       const payload = {
         deck: {
+            ...deckData,
             title: values.title,
             category: values.category,
             description: values.description || "",
@@ -148,7 +167,7 @@ const handleSubmit = async (values: FormValues) => {
             image_url: card.image_url,
         }))
       };
-  
+
       const response = await api.put(`/decks/${deckId}/`, payload);
       
         if (response.status === 200) {
@@ -186,6 +205,10 @@ return (
         wrapperCol={{ span: 24 }}
         layout="horizontal"
       >
+        <Form.Item name="id" hidden>
+          <Input type="hidden" />
+        </Form.Item>
+        
         <Card title="Настройки колоды" className={styles.sectionCard}>
           <Form.Item 
             name="title"
@@ -210,7 +233,14 @@ return (
           <Form.Item 
             name="image_url"
             label="Ссылка на обложку"
-            rules={[{ type: 'url', message: 'Пожалуйста, введите корректный URL' }]}
+            rules={[{ 
+              type: 'url',
+              message: 'Пожалуйста, введите корректный URL',
+              validator: (_, value) => 
+                isValidUrl(value) 
+                  ? Promise.resolve() 
+                  : Promise.reject('Некорректный URL')
+            }]}
           >
             <Input placeholder="https://example.com/image.jpg" />
           </Form.Item>
@@ -252,7 +282,7 @@ return (
           >
             {cards.map((card, index) => (
               <Card 
-                key={index} 
+                key={card.id} 
                 title={`Карточка ${index + 1}`}
                 className={styles.cardItem}
                 actions={[
@@ -267,21 +297,21 @@ return (
                 <Row gutter={[16, 16]} align="top">
                   <Col xs={24} sm={12} md={6}>
                     <Form.Item
-                      label="Слово"
+                      label="Текст лицевой стороны"
+                      required
                       rules={[{ required: true, message: 'Обязательное поле' }]}
                     >
                       <Input
-                        value={card.back_text}
-                        onChange={e => updateCard(index, 'back_text', e.target.value)}
-                        placeholder="Слово на иностранном языке"
+                        value={card.front_text}
+                        onChange={e => updateCard(index, 'front_text', e.target.value)}
+                        placeholder="Текст лицевой стороны"
                       />
                     </Form.Item>
                   </Col>
                     
                   <Col xs={24} sm={12} md={6}>
                     <Form.Item 
-                      label="Транскрипция" 
-                      rules={[{ required: true, message: 'Обязательное поле' }]}
+                      label="Транскрипция"
                     >
                       <Input
                         value={card.transcription}
@@ -293,19 +323,20 @@ return (
                   
                   <Col xs={24} sm={12} md={6}>
                     <Form.Item
-                      label="Перевод"
+                      label="Текст обратной стороны"
+                      required
                       rules={[{ required: true, message: 'Обязательное поле' }]}
                     >
                       <Input
-                        value={card.front_text}
-                        onChange={e => updateCard(index, 'front_text', e.target.value)}
-                        placeholder="Перевод"
+                        value={card.back_text}
+                        onChange={e => updateCard(index, 'back_text', e.target.value)}
+                        placeholder="Текст обратной стороны"
                       />
                     </Form.Item>
                   </Col>
 
                   <Col xs={24} sm={12} md={6}>
-                    <Form.Item label="Изображение" rules={[{ required: true, message: 'Обязательное поле' }]}>
+                    <Form.Item label="Изображение">
                       <Input
                         value={card.image_url}
                         onChange={e => updateCard(index, 'image_url', e.target.value)}
@@ -337,7 +368,7 @@ return (
               size="large"
               style={{marginBottom: "10px"}}
             >
-              Создать
+              Сохранить изменения
             </Button>
           </Form.Item>
         </Form>
@@ -345,4 +376,4 @@ return (
   );
 };
 
-export default DeckEdit;
+export default DeckEditing;
