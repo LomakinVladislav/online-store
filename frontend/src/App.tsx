@@ -8,6 +8,7 @@ import Main from './pages/Main/Main';
 import Authorization from './pages/Authorization/Authorization';
 import ExpiredSession from './components/ExpiredSession/ExpiredSession';
 import DeckCreation from './pages/DeckCreation/DeckCreation';
+import DeckEditing from './pages/DeckEditing/DeckEditing';
 import Favorites from './pages/Favorites/Favorites';
 import MyDecks from './pages/MyDecks/MyDecks';
 import Settings from './pages/Settings/Settings';
@@ -40,13 +41,12 @@ const AppComponent: React.FC = () => {
               <Route path="*" element={<Navigate to="/main" />} />
               <Route path="/expired_session" element={<ExpiredSession />} />
               <Route path="/deck_creation" element={<DeckCreation />} />
+              <Route path="/decks/:deckId/deck_editing" element={<DeckEditing />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/my_decks" element={<MyDecks />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/search" element={<SearchResults />} />
               {/* <Route path="/profile" element={} /> */}
-              {/* <Route path="/library" element={} /> */}
-              {/* <Route path="/newdeck" element={} /> */}
             </Route>
           </Routes>
         </App>

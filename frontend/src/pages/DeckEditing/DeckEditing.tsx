@@ -1,163 +1,191 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styles from './DeckCreation.module.css'
+import styles from './DeckEditing.module.css';
 import { 
-  Button, Form, Input, Radio, Rate, Select, message, Card, Row, Col,
+  Button, Form, Input, Radio, Rate, Select, message, Card, Row, Col, Spin 
 } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import api from '../../api/api'
+import api from '../../api/api';
 import { AxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const { TextArea } = Input;
 
 interface FormValues {
-  title: string;
-  privacy: 'public' | 'private';
-  image_url: string;
-  category: string;
-  description: string;
-  difficulty: number;
+    title: string;
+    privacy: 'public' | 'private';
+    image_url: string;
+    category: string;
+    description: string;
+    difficulty: number;
 }
 
 interface CardType {
-  front_text: string;
-  back_text: string;
-  transcription: string;
-  image_url: string;
+    id?: number;
+    front_text: string;
+    back_text: string;
+    transcription: string;
+    image_url: string;
 }
 
-const DeckCreation: React.FC = () => {
+interface ApiError {
+    detail?: string;
+    [key: string]: any;
+}
+
+const DeckEdit: React.FC = () => {
+    const { deckID } = useParams<{ deckID: string }>();
     const [form] = Form.useForm<FormValues>();
     const [loading, setLoading] = useState(false);
+    const [fetching, setFetching] = useState(true);
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-    const [cards, setCards] = useState<CardType[]>([
-      { front_text: '', back_text: '', image_url: '', transcription: '' }
-    ]);  
-    
+    const [cards, setCards] = useState<CardType[]>([]);
+
     useEffect(() => {
-        return () => {
-            if (timerRef.current) {
-                clearTimeout(timerRef.current);
-            }
-        };
-    }, []);
-
-
-    const addCard = () => {
-      setCards([...cards, { front_text: '', back_text: '', image_url: '', transcription: '' }]);
-    };
-
-    const removeCard = (index: number) => {
-      if (cards.length <= 1) return;
-      const newCards = [...cards];
-      newCards.splice(index, 1);
-      setCards(newCards);
-    };
-  
-    const updateCard = (index: number, field: keyof CardType, value: string) => {
-      const newCards = [...cards];
-      newCards[index] = { ...newCards[index], [field]: value };
-      setCards(newCards);
-    };
-
-    const validateCards = (): boolean => {
-      for (let i = 0; i < cards.length; i++) {
-        const card = cards[i];
-        const errors = [];
+        const fetchDeckData = async () => {
+        try {
+            const response = await api.get(`/decks/${deckID}/information/`);
+            const { deck, cards: deckCards } = response.data;
+            
+            form.setFieldsValue({
+                title: deck.title,
+                privacy: deck.is_public ? 'public' : 'private',
+                image_url: deck.image_url,
+                category: deck.category,
+                description: deck.description,
+                difficulty: deck.difficulty,
+            });
         
-        if (!card.front_text.trim()) errors.push("Слово");
-        if (!card.back_text.trim()) errors.push("Перевод");
-        if (!card.transcription.trim()) errors.push("Транскрипция");
-        if (!card.image_url.trim()) errors.push("Изображение");
-        
-        if (errors.length > 0) {
-          messageApi.error(
-            `Заполните обязательные поля в карточке ${i + 1}: ${errors.join(", ")}`
-          );
-          return false;
+            setCards(deckCards.map((card: any) => ({
+                id: card.id,
+                front_text: card.front_text,
+                back_text: card.back_text,
+                transcription: card.transcription,
+                image_url: card.image_url,
+            })));
+        } catch (err) {
+            const error = err as AxiosError<ApiError>;
+            messageApi.error('Ошибка загрузки данных: ' + (error.response?.data?.detail || error.message));
+        } finally {
+            setFetching(false);
         }
-        
-        if (card.image_url.trim() && !isValidUrl(card.image_url)) {
-          messageApi.error(
-            `Некорректный URL изображения в карточке ${i + 1}`
-          );
-          return false;
-        }
-      }
-      return true;
     };
-    
-    const isValidUrl = (url: string) => {
-      try {
-        new URL(url);
-        return true;
-      } catch {
+      
+
+    fetchDeckData();
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+    }, [deckID, form, messageApi]);
+
+const addCard = () => {
+    setCards([...cards, { front_text: '', back_text: '', image_url: '', transcription: '' }]);
+};
+
+const removeCard = (index: number) => {
+    if (cards.length <= 1) return;
+    const newCards = [...cards];
+    newCards.splice(index, 1);
+    setCards(newCards);
+};
+
+const updateCard = (index: number, field: keyof CardType, value: string) => {
+    const newCards = [...cards];
+    newCards[index] = { ...newCards[index], [field]: value };
+    setCards(newCards);
+};
+
+const isValidUrl = (url: string) => {
+    try { new URL(url); return true; } 
+    catch { return false; }
+};
+
+const validateCards = (): boolean => {
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
+      const errors = [];
+      
+      if (!card.front_text.trim()) errors.push("Слово");
+      if (!card.back_text.trim()) errors.push("Перевод");
+      if (!card.transcription.trim()) errors.push("Транскрипция");
+      if (!card.image_url.trim()) errors.push("Изображение");
+      
+      if (errors.length > 0) {
+        messageApi.error(`Заполните поля в карточке ${i + 1}: ${errors.join(", ")}`);
         return false;
       }
-    };
-
-
-    const onFinish = async (values: FormValues) => {
-      if (!validateCards()) return;
       
-      try {
-        setLoading(true);
-        
-        const payload = {
-          deck: {
+      if (card.image_url.trim() && !isValidUrl(card.image_url)) {
+        messageApi.error(`Некорректный URL изображения в карточке ${i + 1}`);
+        return false;
+      }
+    }
+    return true;
+};
+
+const handleSubmit = async (values: FormValues) => {
+    if (!validateCards()) return;
+    
+    try {
+      setLoading(true);
+      const payload = {
+        deck: {
             title: values.title,
             category: values.category,
             description: values.description || "",
             image_url: values.image_url || "",
             is_public: values.privacy === 'public',
             difficulty: values.difficulty
-          },
-          cards: cards
-        };
+        },
+        cards: cards.map(card => ({
+            id: card.id,
+            front_text: card.front_text,
+            back_text: card.back_text,
+            transcription: card.transcription,
+            image_url: card.image_url,
+        }))
+      };
   
-        const response = await api.post('/decks/', payload);
-        
-        if (response.status === 200 || response.status === 201) {
-            messageApi.success({
-                content: 'Ваш набор успешно создан',
-                duration: 3,
-            });
-            form.resetFields();
-            setCards([{ front_text: '', back_text: '', image_url: '', transcription: '' }]);
+      const response = await api.put(`/decks/${deckID}/`, payload);
+      
+        if (response.status === 200) {
+            messageApi.success('Набор успешно обновлен');
             timerRef.current = setTimeout(() => {
-                navigate(`/main`);
+            navigate(`/decks/${deckID}`);
             }, 1500);
         }
-      } catch (err) {
-        const error = err as AxiosError;
-        const errorMessage = error.response?.data 
-          ? (error.response.data as { detail?: string })?.detail || 'Неизвестная ошибка'
-          : error.message;
-        
-        messageApi.error({
-            content: 'Ошибка создания. Проверьте правильность заполнения полей',
-            duration: 3,
-          });
-      } finally {
-        setLoading(false);
-      }
-    };
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
+      messageApi.error('Ошибка обновления: ' + (error.response?.data?.detail || error.message));
+    } finally {
+      setLoading(false);
+    }
+};
   
-    return (
-      <div className={styles.mainContainer}>
-        {contextHolder}
-        <h1 style={{display: "flex", justifyContent: "center"}}>Создание нового карточного набора</h1>
 
-        <Form<FormValues>
-          form={form}
-          onFinish={onFinish}
-          labelCol={{ span: 24 }}
-          wrapperCol={{ span: 24 }}
-          layout="horizontal" 
-        >
+if (fetching) {
+    return (
+        <div className={styles.mainContainer}>
+            <Spin size="large" tip="Загрузка данных..." />
+        </div>
+    );
+}
+
+return (
+    <div className={styles.mainContainer}>
+      {contextHolder}
+      <h1 style={{ display: "flex", justifyContent: "center" }}>Редактирование карточного набора</h1>
+
+      <Form<FormValues>
+        form={form}
+        onFinish={handleSubmit}
+        labelCol={{ span: 24 }}
+        wrapperCol={{ span: 24 }}
+        layout="horizontal"
+      >
         <Card title="Настройки колоды" className={styles.sectionCard}>
           <Form.Item 
             name="title"
@@ -313,8 +341,8 @@ const DeckCreation: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
-        </div>
-    );
-  };
-  
-export default DeckCreation;
+    </div>
+  );
+};
+
+export default DeckEdit;
