@@ -8,6 +8,7 @@ import { useFavorites } from '../../hooks/useFavorites';
 import { DeckList } from '../../components/DeckList/DeckList';
 import { IDeckData } from '@/types';
 import { Spin } from "antd";
+import { useMyDecks } from '../../hooks/useMyDecks';
 
 
 interface ICustomAxiosConfig extends AxiosRequestConfig {
@@ -20,15 +21,10 @@ const Main: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [decks, setDecks] = useState<IDeckData[]>([]);
   const navigate = useNavigate();
+  const { myDecks, loading: myDecksLoading } = useMyDecks()
+  const {favorites, favoritesLoading, loadingFavorites, toggleFavorite } = useFavorites();
 
-  const {
-    favorites,
-    favoritesLoading,
-    loadingFavorites,
-    toggleFavorite
-  } = useFavorites();
-
-  const isLoading = decksLoading || favoritesLoading;
+  const isLoading = decksLoading || favoritesLoading || myDecksLoading;
 
   useEffect(() => {
     setActiveMenuKey('sidebar-home');
@@ -50,6 +46,11 @@ const Main: React.FC = () => {
     }
   };
 
+  const handleEditClick = (deckId: number) => {
+    setActiveMenuKey(null);
+    navigate(`/decks/${deckId}/deck_editing`);
+  };
+
   const handleCardClick = (deckId: number) => {
     setActiveMenuKey(null);
     navigate(`/decks/${deckId}/content`);
@@ -68,6 +69,8 @@ const Main: React.FC = () => {
           loadingFavorites={loadingFavorites}
           onToggleFavorite={toggleFavorite}
           onCardClick={handleCardClick}
+          myDecks={myDecks}
+          onEditClick={handleEditClick}
         />
       ) : (
         <div>Нет доступных колод</div>

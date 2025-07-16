@@ -8,6 +8,8 @@ import { IDeckData } from '@/types';
 import { DeckList } from '../../components/DeckList/DeckList';
 import { useFavorites } from '../../hooks/useFavorites';
 import { Spin } from "antd";
+import { useMyDecks } from '../../hooks/useMyDecks';
+
 
 
 interface ICustomAxiosConfig extends AxiosRequestConfig {
@@ -18,19 +20,14 @@ const SearchResults = () => {
     const { setActiveMenuKey } = useMenu();
     const location = useLocation();
     const navigate = useNavigate();
-    
+    const { myDecks, loading: myDecksLoading } = useMyDecks()
     const [searchResults, setSearchResults] = useState<IDeckData[]>([]);
     const [searchLoading, setSearchLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
   
-    const {
-      favorites,
-      favoritesLoading,
-      loadingFavorites,
-      toggleFavorite
-    } = useFavorites();
+    const { favorites, favoritesLoading, loadingFavorites, toggleFavorite } = useFavorites();
   
-    const isLoading = searchLoading || favoritesLoading;
+    const isLoading = searchLoading || favoritesLoading || myDecksLoading;
   
     useEffect(() => {
       const searchParams = new URLSearchParams(location.search);
@@ -62,7 +59,12 @@ const SearchResults = () => {
       setActiveMenuKey(null);
       navigate(`/decks/${deckId}/content`);
     };
-  
+    
+    const handleEditClick = (deckId: number) => {
+      setActiveMenuKey(null);
+      navigate(`/decks/${deckId}/deck_editing`);
+    };
+
     return (
       <div className={styles.mainContainer}>
         <h1>Результаты поиска</h1>
@@ -78,6 +80,8 @@ const SearchResults = () => {
             loadingFavorites={loadingFavorites}
             onToggleFavorite={toggleFavorite}
             onCardClick={handleCardClick}
+            myDecks={myDecks}
+            onEditClick={handleEditClick}
           />
         ) : (
           <p>Ничего не найдено</p>

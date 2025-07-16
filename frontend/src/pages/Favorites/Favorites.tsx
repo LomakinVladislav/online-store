@@ -7,6 +7,8 @@ import api from '../../api/api';
 import { IDeckData } from '@/types';
 import { useFavorites } from '../../hooks/useFavorites';
 import { DeckList } from '../../components/DeckList/DeckList';
+import { useMyDecks } from '../../hooks/useMyDecks';
+
 
 
 const Favorites: React.FC = () => {
@@ -15,18 +17,13 @@ const Favorites: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [decks, setDecks] = useState<IDeckData[]>([]);
   const [confirmDeckId, setConfirmDeckId] = useState<number | null>(null);
+  const { myDecks, loading: myDecksLoading } = useMyDecks()
   const navigate = useNavigate();
-
-  const {
-    favorites,
-    favoritesLoading,
-    loadingFavorites,
-    handleAddFavorite,
-    handleDeleteFavorite
-  } = useFavorites();
+  const { favorites, favoritesLoading, loadingFavorites, handleAddFavorite, handleDeleteFavorite } = useFavorites();
 
   const favoriteDecks = decks.filter(deck => favorites.includes(deck.id));
-  const isLoading = decksLoading || favoritesLoading;
+
+  const isLoading = decksLoading || favoritesLoading || myDecksLoading;
 
   useEffect(() => {
     setActiveMenuKey('sidebar-favorites');
@@ -91,6 +88,11 @@ const Favorites: React.FC = () => {
     navigate('/main');
   };
 
+  const handleEditClick = (deckId: number) => {
+    setActiveMenuKey(null);
+    navigate(`/decks/${deckId}/deck_editing`);
+  };
+
   return (
     <div className={styles.mainContainer}>
       <Modal
@@ -116,6 +118,8 @@ const Favorites: React.FC = () => {
           loadingFavorites={loadingFavorites}
           onToggleFavorite={toggleFavorite}
           onCardClick={handleCardClick}
+          myDecks={myDecks}
+          onEditClick={handleEditClick}
         />
       ) : (
         <div className={styles.warningContainer}>

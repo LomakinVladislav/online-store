@@ -8,16 +8,14 @@ interface DeckListProps {
   decks: IDeckData[];
   favorites: number[];
   loadingFavorites: { [key: number]: boolean };
+  myDecks: number[];
   onToggleFavorite: (deckId: number, e: React.MouseEvent) => void;
   onCardClick: (deckId: number) => void;
+  onEditClick: (deckId: number) => void;
 }
 
 export const DeckList: React.FC<DeckListProps> = ({
-  decks,
-  favorites,
-  loadingFavorites,
-  onToggleFavorite,
-  onCardClick
+  decks, favorites, loadingFavorites, onToggleFavorite, onCardClick, myDecks, onEditClick,
 }) => {
   return (
     <List
@@ -31,6 +29,8 @@ export const DeckList: React.FC<DeckListProps> = ({
             loadingFavorite={loadingFavorites[deck.id] || false}
             onToggleFavorite={onToggleFavorite}
             onClick={onCardClick}
+            isEditable={myDecks.includes(deck.id)}
+            onEditClick={onEditClick}
           />
         </List.Item>
       )}
