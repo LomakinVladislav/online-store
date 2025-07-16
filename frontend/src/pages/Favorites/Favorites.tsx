@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal } from 'antd';
+import { Button, Modal, Spin } from 'antd';
 import { useNavigate } from "react-router-dom";
 import styles from './Favorites.module.css';
 import { useMenu } from '../../contexts/MenuContext';
@@ -106,7 +106,7 @@ const Favorites: React.FC = () => {
       </Modal>
 
       {isLoading ? (
-        <div>Загрузка данных...</div>
+        <div><Spin size="large" tip="Загрузка данных..." /></div>
       ) : error ? (
         <div>{error}</div>
       ) : favoriteDecks.length > 0 ? (

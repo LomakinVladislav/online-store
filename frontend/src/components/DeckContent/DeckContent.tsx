@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from "./DeckContent.module.css"
-import { Card, Button } from 'antd';
+import { Card, Button, Spin } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import axios from "axios";
 import api from '../../api/api'
@@ -82,7 +82,7 @@ const DeckContent: React.FC = () => {
     setFlipped(!flipped);
   };
 
-  if (loading) return <div className={styles.loading}>Загрузка карточек...</div>;
+  if (loading) return <div className={styles.loading}><Spin size="large" tip="Загрузка данных..." /></div>;
   if (error) return <div className={styles.error}>{error}</div>;
   if (cards.length === 0) return <div>Нет доступных карточек</div>;
 

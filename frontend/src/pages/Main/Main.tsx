@@ -7,6 +7,7 @@ import { AxiosRequestConfig } from 'axios';
 import { useFavorites } from '../../hooks/useFavorites';
 import { DeckList } from '../../components/DeckList/DeckList';
 import { IDeckData } from '@/types';
+import { Spin } from "antd";
 
 
 interface ICustomAxiosConfig extends AxiosRequestConfig {
@@ -57,7 +58,7 @@ const Main: React.FC = () => {
   return (
     <div className={styles.mainContainer}>
       {isLoading ? (
-        <div>Загрузка данных...</div>
+        <div><Spin size="large" tip="Загрузка данных..." /></div>
       ) : error ? (
         <div>{error}</div>
       ) : decks.length > 0 ? (

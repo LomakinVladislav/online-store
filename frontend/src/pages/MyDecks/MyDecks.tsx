@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import { useNavigate } from "react-router-dom";
 import styles from './MyDecks.module.css';
 import { useMenu } from '../../contexts/MenuContext';
@@ -56,7 +56,7 @@ const MyDecks: React.FC = () => {
   return (
     <div className={styles.mainContainer}>
       {isLoading ? (
-        <div>Загрузка данных...</div>
+        <div><Spin size="large" tip="Загрузка данных..." /></div>
       ) : error ? (
         <div>{error}</div>
       ) : decks.length > 0 ? (

@@ -7,6 +7,7 @@ import { AxiosRequestConfig} from 'axios';
 import { IDeckData } from '@/types';
 import { DeckList } from '../../components/DeckList/DeckList';
 import { useFavorites } from '../../hooks/useFavorites';
+import { Spin } from "antd";
 
 
 interface ICustomAxiosConfig extends AxiosRequestConfig {
@@ -67,7 +68,7 @@ const SearchResults = () => {
         <h1>Результаты поиска</h1>
         
         {isLoading ? (
-          <div>Загрузка данных...</div>
+          <div><Spin size="large" tip="Загрузка данных..." /></div>
         ) : error ? (
           <div>{error}</div>
         ) : searchResults.length > 0 ? (
