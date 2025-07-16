@@ -49,7 +49,7 @@ const Favorites: React.FC = () => {
       setDecks(uniqueDecks);
     } catch (error) {
       console.error('Error fetching cards:', error);
-      setError('Не удалось загрузить карточки');
+      setError('Не удалось загрузить колоды');
     } finally {
       setDecksLoading(false);
     }

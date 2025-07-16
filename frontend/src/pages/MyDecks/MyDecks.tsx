@@ -37,7 +37,7 @@ const MyDecks: React.FC = () => {
       setDecks(response.data);
     } catch (error) {
       console.error('Error fetching cards:', error);
-      setError('Не удалось загрузить карточки');
+      setError('Не удалось загрузить колоды');
     } finally {
       setDecksLoading(false);
     }
