@@ -58,7 +58,7 @@ const Main: React.FC = () => {
   return (
     <div className={styles.mainContainer}>
       {isLoading ? (
-        <div><Spin size="large" tip="Загрузка данных..." /></div>
+        <div className={styles.loadContainer}><Spin size="large" tip="Загрузка данных..." /></div>
       ) : error ? (
         <div>{error}</div>
       ) : decks.length > 0 ? (

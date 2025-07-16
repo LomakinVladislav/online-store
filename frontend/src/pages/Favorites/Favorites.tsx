@@ -106,7 +106,7 @@ const Favorites: React.FC = () => {
       </Modal>
 
       {isLoading ? (
-        <div><Spin size="large" tip="Загрузка данных..." /></div>
+        <div className={styles.loadContainer}><Spin size="large" tip="Загрузка данных..." /></div>
       ) : error ? (
         <div>{error}</div>
       ) : favoriteDecks.length > 0 ? (

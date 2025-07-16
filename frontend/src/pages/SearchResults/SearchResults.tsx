@@ -68,7 +68,7 @@ const SearchResults = () => {
         <h1>Результаты поиска</h1>
         
         {isLoading ? (
-          <div><Spin size="large" tip="Загрузка данных..." /></div>
+          <div className={styles.loadContainer}><Spin size="large" tip="Загрузка данных..." /></div>
         ) : error ? (
           <div>{error}</div>
         ) : searchResults.length > 0 ? (

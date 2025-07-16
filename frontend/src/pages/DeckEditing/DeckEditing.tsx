@@ -187,9 +187,7 @@ const handleSubmit = async (values: FormValues) => {
 
 if (fetching) {
     return (
-        <div className={styles.mainContainer}>
-            <Spin size="large" tip="Загрузка данных..." />
-        </div>
+      <div className={styles.loadContainer}><Spin size="large" tip="Загрузка данных..." /></div>
     );
 }
 

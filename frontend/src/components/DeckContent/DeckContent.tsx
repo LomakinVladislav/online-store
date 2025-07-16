@@ -82,7 +82,7 @@ const DeckContent: React.FC = () => {
     setFlipped(!flipped);
   };
 
-  if (loading) return <div className={styles.loading}><Spin size="large" tip="Загрузка данных..." /></div>;
+  if (loading) return <div className={styles.loadContainer}><Spin size="large" tip="Загрузка данных..." /></div>;
   if (error) return <div className={styles.error}>{error}</div>;
   if (cards.length === 0) return <div>Нет доступных карточек</div>;
 
