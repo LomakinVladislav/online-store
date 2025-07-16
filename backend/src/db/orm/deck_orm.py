@@ -188,7 +188,7 @@ async def get_search_decks(query: str, session: Session):
             deckModel.description.ilike(search_pattern),
             deckModel.category.ilike(search_pattern)
         )
-    )
+    ).where(deckModel.is_public == True)
     
     result = await session.execute(stmt)
     return result.scalars().all()
