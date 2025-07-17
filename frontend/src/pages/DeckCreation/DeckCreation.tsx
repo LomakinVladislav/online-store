@@ -204,7 +204,7 @@ const DeckCreation: React.FC = () => {
   
           <Form.Item 
             name="description"
-            label="Описание"
+            label="Теги"
           >
             <TextArea rows={3} />
           </Form.Item>

@@ -260,9 +260,9 @@ return (
   
           <Form.Item 
             name="description"
-            label="Описание"
+            label="Теги"
           >
-            <TextArea rows={3} />
+            <TextArea rows={3} placeholder='Например, #Путешествия #Страны #Туризм'/>
           </Form.Item>
   
           <Form.Item 
