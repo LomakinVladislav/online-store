@@ -8,8 +8,8 @@ class userModel(Base):
     __tablename__ = "users"  
 
     id: Mapped[intpk]
-    username: Mapped[str]
-    email: Mapped[str]
+    username: Mapped[str] = mapped_column(unique=True)
+    email: Mapped[str] = mapped_column(unique=True)
     full_name: Mapped[str]
     hashed_password: Mapped[str]
     disabled: Mapped[bool]
