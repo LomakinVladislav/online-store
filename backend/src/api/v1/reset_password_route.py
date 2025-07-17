@@ -7,17 +7,17 @@ from api.v1.common_route import SessionDep
 router = APIRouter()
 
 
-@router.post("/forgot-password")
+@router.post("/forgot_password")
 async def forgot_password(request: ForgotPasswordRequest, session: SessionDep):
     success = await initiate_password_reset(email=request.email, session=session)
     if not success:
-        raise HTTPException(status_code=404, detail="User not found")
-    return {"message": "Password reset email sent"}
+        raise HTTPException(status_code=404, detail="Пользователь с таким email не найден")
+    return {"message": "Письмо для восстановления пароля успешно отправлено!"}
 
 
-@router.post("/reset-password")
+@router.post("/reset_password")
 async def reset_password(request: ResetPasswordRequest, session: SessionDep):
     user = await complete_password_reset(token=request.token, new_password=request.new_password, session=session)
     if not user:
-        raise HTTPException(status_code=400, detail="Invalid or expired token")
-    return {"message": "Password updated successfully"}
+        raise HTTPException(status_code=400, detail="Время работы ссылки истекло")
+    return {"message": "Пароль успешно обновлен"}
