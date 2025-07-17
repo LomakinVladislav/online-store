@@ -4,7 +4,6 @@ import type { FormProps } from 'antd';
 import { Button, Form, Input, Layout, Switch, message } from 'antd';
 import styles from "./ForgotPassword.module.css";
 import api from '../../api/api'
-import axios, { AxiosRequestConfig } from 'axios';
 
 type ForgotPasswordFieldType = {
   email?: string;
@@ -13,7 +12,7 @@ type ForgotPasswordFieldType = {
 type ForgotPasswordProps = {
     isDarkMode: boolean;
     toggleTheme: () => void;
-  };
+};
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isDarkMode, toggleTheme }) => {
   const [messageApi, contextHolder] = message.useMessage();
