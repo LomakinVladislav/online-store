@@ -51,7 +51,7 @@ const MyDecks: React.FC = () => {
 
   const handleEditClick = (deckId: number) => {
     setActiveMenuKey(null);
-    navigate(`/decks/${deckId}/edit`);
+    navigate(`/decks/${deckId}/deck_editing`);
   };
 
   return (
