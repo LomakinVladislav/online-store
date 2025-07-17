@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import type { FormProps } from 'antd';
 import { Button, Form, Input, Layout, Switch, message } from 'antd';
 import styles from "./ForgotPassword.module.css";
+import api from '../../api/api'
+import axios, { AxiosRequestConfig } from 'axios';
 
 type ForgotPasswordFieldType = {
   email?: string;
@@ -23,26 +25,27 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isDarkMode, toggleTheme
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://yourapi.com/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: values.email }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Request failed');
-      }
-      
-      const data = await response.json();
+      const response = await api.post('/forgot_password', {email: values.email}, {skipRedirect: true});
+
       messageApi.success({
-        content: data.message || 'Reset link sent successfully',
+        content: response.data.message || 'Reset link sent successfully',
         duration: 3,
       });
-      setTimeout(() => navigate('/login'), 3000);
     } catch (error: any) {
+      let errorMessage = 'Error sending request';
+
+      if (error.response) {
+        if (error.response.data.detail) {
+          errorMessage = error.response.data.detail;
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message;
+        }
+      } else if (error.request) {
+        errorMessage = 'No response from server';
+      }
+
       messageApi.error({
-        content: error.message || 'Error sending request',
+        content: errorMessage,
         duration: 3,
       });
     } finally {
@@ -94,11 +97,11 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isDarkMode, toggleTheme
               rules={[
                 { 
                   required: true, 
-                  message: 'Please input your email!' 
+                  message: 'Пожалуйста, введите ваш email!' 
                 },
                 { 
                   type: 'email', 
-                  message: 'Please enter a valid email address' 
+                  message: 'Пожалуйста, введите корректный email' 
                 }
               ]}
               className={styles.formItem}
