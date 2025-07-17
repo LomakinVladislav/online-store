@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from 'antd';
+import { Card, Rate } from 'antd';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
 import styles from './DeckCard.module.css';
 import { IDeckData } from '@/types';
@@ -59,10 +59,21 @@ export const DeckCard: React.FC<DeckCardProps> = ({
       }
       onClick={() => onClick(deck.id)}
     >
-      <Meta 
+      <Meta
         title={deck.title} 
-        description={deck.description} 
+        description={
+          <div>
+            <Rate 
+              disabled 
+              defaultValue={deck.difficulty} 
+              allowHalf 
+              style={{ fontSize: 14,  display: 'flex'}} 
+            />
+            <span className={styles.description}>{deck.description}</span>
+          </div>  
+        }
       />
+      
     </Card>
   );
 };

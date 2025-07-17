@@ -7,6 +7,6 @@ export interface IDeckData {
     created_at: string;
     updated_at: string;
     is_public: boolean;
-    difficulty: string;
+    difficulty: number;
     image_url: string;
 }
