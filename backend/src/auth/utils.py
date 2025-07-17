@@ -3,6 +3,7 @@ from passlib.context import CryptContext
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from db.models.user_model import userModel
+from db.models.reset_password_model import resetPasswordModel
 import jwt
 from auth.config import SECRET_KEY, ALGORITHM
 from auth.schemas import UserInDBSchema
@@ -90,3 +91,18 @@ async def send_reset_email(email: str, reset_link: str):
     except Exception as e:
         print(f"Общая ошибка: {e}")
         return False
+    
+
+async def validate_reset_token(session: Session, reset_token: str) -> bool:
+    query = (
+        select(resetPasswordModel).where(
+            resetPasswordModel.reset_token == reset_token,
+            resetPasswordModel.reset_token_expires > datetime.utcnow()
+        ))
+    result = await session.execute(query)
+    reset_entry = result.scalar_one_or_none() 
+    
+    if not reset_entry:
+        return False
+    
+    return True

@@ -32,7 +32,7 @@ async def initiate_password_reset(email: str, session: Session) -> bool:
     session.add(reset_entry)
     await session.commit()
     
-    reset_link = f"http://yourfrontend.com/reset-password?token={token}"
+    reset_link = f"http://localhost:3000/reset_password?token={token}"
     await send_reset_email(email, reset_link)
     
     return True

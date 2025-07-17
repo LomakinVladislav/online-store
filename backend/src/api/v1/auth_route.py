@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
-from auth.utils import authenticate_user, create_access_token
+from auth.utils import authenticate_user, create_access_token, validate_reset_token
 from auth.schemas import TokenSchema
 from auth.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from api.v1.common_route import SessionDep
@@ -25,3 +25,14 @@ async def login_for_access_token(session: SessionDep, form_data: OAuth2PasswordR
         expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.get("/auth/validate_reset_token/")
+async def validate_reset_token_endpoint(session: SessionDep, reset_token: str = Query(..., description="Reset password token")):
+    is_valid = await validate_reset_token(session=session, reset_token=reset_token)
+    if not is_valid:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or expired token"
+        )
+    return {"valid": True}
