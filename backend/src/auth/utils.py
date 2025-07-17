@@ -6,6 +6,11 @@ from db.models.user_model import userModel
 import jwt
 from auth.config import SECRET_KEY, ALGORITHM
 from auth.schemas import UserInDBSchema
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from auth.config import EMAIL_FROM, EMAIL_PASSWORD 
+
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -49,3 +54,39 @@ async def create_access_token(data: dict, expires_delta: timedelta | None = None
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=15))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+# Восстановление пароля пользователем
+
+async def send_reset_email(email: str, reset_link: str):
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = "Сброс пароля"
+    msg["From"] = EMAIL_FROM
+    msg["To"] = email
+    
+    text = f"""Для сброса пароля перейдите по ссылке:\n{reset_link}\n\n"""
+    text += "Если вы не запрашивали сброс, проигнорируйте это письмо."
+    
+    html = f"""<html>
+    <body>
+      <p>Для сброса пароля перейдите по ссылке:</p>
+      <p><a href="{reset_link}">Сбросить пароль</a></p>
+      <p>Если вы не запрашивали сброс пароля, проигнорируйте это письмо.</p>
+    </body>
+    </html>"""
+    
+    msg.attach(MIMEText(text, "plain"))
+    msg.attach(MIMEText(html, "html"))
+    
+    try:
+        with smtplib.SMTP("smtp.mail.ru", 587, timeout=10) as server:
+            server.starttls()
+            server.login(EMAIL_FROM, EMAIL_PASSWORD)
+            server.send_message(msg)
+            return True
+    except smtplib.SMTPException as e:
+        print(f"SMTP ошибка: {e}")
+        return False
+    except Exception as e:
+        print(f"Общая ошибка: {e}")
+        return False

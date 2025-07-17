@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List
-from db.schemas.card_shemas import CardCreateSchema, CardResponseSchema, CardUpdateSchema
+from db.schemas.card_schemas import CardCreateSchema, CardResponseSchema, CardUpdateSchema
 
 class DeckAddSchema(BaseModel):
     title: str

@@ -9,7 +9,7 @@ from auth.utils import get_user
 from api.v1.common_route import SessionDep
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token") # Параметр `tokenUrl` должен указывать на URL эндпоинта для получения токена, относительно вашего приложения
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 async def get_current_user(session: SessionDep, token: Annotated[str, Depends(oauth2_scheme)]) -> dict:
     credentials_exception = HTTPException(
