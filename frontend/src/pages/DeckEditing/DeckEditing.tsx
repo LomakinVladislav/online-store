@@ -295,14 +295,13 @@ return (
                 <Row gutter={[16, 16]} align="top">
                   <Col xs={24} sm={12} md={6}>
                     <Form.Item
-                      label="Текст лицевой стороны"
-                      required
+                      label="Английское слово"
                       rules={[{ required: true, message: 'Обязательное поле' }]}
                     >
                       <Input
-                        value={card.front_text}
-                        onChange={e => updateCard(index, 'front_text', e.target.value)}
-                        placeholder="Текст лицевой стороны"
+                        value={card.back_text}
+                        onChange={e => updateCard(index, 'back_text', e.target.value)}
+                        placeholder="Слово на иностранном языке"
                       />
                     </Form.Item>
                   </Col>
@@ -310,6 +309,7 @@ return (
                   <Col xs={24} sm={12} md={6}>
                     <Form.Item 
                       label="Транскрипция"
+                      rules={[{ required: true, message: 'Обязательное поле' }]}
                     >
                       <Input
                         value={card.transcription}
@@ -321,20 +321,19 @@ return (
                   
                   <Col xs={24} sm={12} md={6}>
                     <Form.Item
-                      label="Текст обратной стороны"
-                      required
+                      label="Перевод"
                       rules={[{ required: true, message: 'Обязательное поле' }]}
                     >
                       <Input
-                        value={card.back_text}
-                        onChange={e => updateCard(index, 'back_text', e.target.value)}
-                        placeholder="Текст обратной стороны"
+                        value={card.front_text}
+                        onChange={e => updateCard(index, 'front_text', e.target.value)}
+                        placeholder="Перевод"
                       />
                     </Form.Item>
                   </Col>
 
                   <Col xs={24} sm={12} md={6}>
-                    <Form.Item label="Изображение">
+                    <Form.Item label="Изображение" rules={[{ required: true, message: 'Обязательное поле' }]}>
                       <Input
                         value={card.image_url}
                         onChange={e => updateCard(index, 'image_url', e.target.value)}

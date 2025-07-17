@@ -239,7 +239,7 @@ const DeckCreation: React.FC = () => {
                 <Row gutter={[16, 16]} align="top">
                   <Col xs={24} sm={12} md={6}>
                     <Form.Item
-                      label="Слово"
+                      label="Английское слово"
                       rules={[{ required: true, message: 'Обязательное поле' }]}
                     >
                       <Input
