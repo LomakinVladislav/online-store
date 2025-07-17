@@ -13,6 +13,7 @@ import Favorites from './pages/Favorites/Favorites';
 import MyDecks from './pages/MyDecks/MyDecks';
 import Settings from './pages/Settings/Settings';
 import SearchResults from './pages/SearchResults/SearchResults';
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 const AppComponent: React.FC = () => {
@@ -31,6 +32,7 @@ const AppComponent: React.FC = () => {
         <App>
         <Routes>
             <Route path="/auth" element={<Authorization isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>} />
+            <Route path="/forgot_password" element={<ForgotPassword isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>} />
             <Route element={(
               <LayoutComponent isDarkMode={isDarkMode} toggleTheme={toggleTheme}>
                 <Outlet /> 

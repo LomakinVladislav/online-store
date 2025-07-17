@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import type { FormProps } from 'antd';
 import { Button, Checkbox, Form, Input, Switch, Layout, message, Space, Radio } from 'antd';
 import styles from "./Authorization.module.css"
@@ -23,7 +23,7 @@ type RegisterFieldType = {
 type AuthorizationProps = {
     isDarkMode: boolean;
     toggleTheme: () => void;
-  };
+};
   
 
   const Authorization: React.FC<AuthorizationProps> = ({ isDarkMode, toggleTheme }) => {
@@ -224,7 +224,7 @@ type AuthorizationProps = {
               valuePropName="checked" 
               className={styles.formItem}
             >
-              <Checkbox>Запомнить меня</Checkbox>    
+              <Link to="/forgot_password">Забыли пароль?</Link>
             </Form.Item>
 
             <Form.Item className={styles.formItem}>
