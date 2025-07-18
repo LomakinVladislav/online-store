@@ -6,6 +6,10 @@ class UserAddSchema(BaseModel):
     password: str
     full_name: str
 
-class UserSchema(UserAddSchema):
+class UserInDBSchema(BaseModel):
+    username: str
+    email: str | None = None
+    full_name: str | None = None
+    disabled: bool | None = None
     id: int
-    disabled: bool
+    hashed_password: str

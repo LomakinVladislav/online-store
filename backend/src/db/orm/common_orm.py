@@ -1,6 +1,4 @@
-# Файл с описанием функций (методов) для создания запросов и команд базе данных
 from db.database import Base, async_engine
-
 
 async def create_tables():
     async with async_engine.begin() as conn:

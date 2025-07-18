@@ -4,7 +4,7 @@ from datetime import timedelta
 from auth.utils import authenticate_user, create_access_token, validate_reset_token
 from auth.schemas import TokenSchema
 from auth.config import ACCESS_TOKEN_EXPIRE_MINUTES
-from api.v1.common_route import SessionDep
+from api.session_dependency import SessionDep
 from db.schemas.reset_password_schemas import ForgotPasswordRequest, ResetPasswordRequest
 from db.orm.reset_password_orm import initiate_password_reset, complete_password_reset
 

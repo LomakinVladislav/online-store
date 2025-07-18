@@ -4,9 +4,10 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError, ExpiredSignatureError
 import jwt
 from auth.config import SECRET_KEY, ALGORITHM
-from auth.schemas import TokenDataSchema, UserInDBSchema
+from auth.schemas import TokenDataSchema
+from db.schemas.user_schemas import UserInDBSchema
 from auth.utils import get_user
-from api.v1.common_route import SessionDep
+from api.session_dependency import SessionDep
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")

@@ -6,28 +6,26 @@ from db.models.user_model import userModel
 from db.models.reset_password_model import resetPasswordModel
 import jwt
 from auth.config import SECRET_KEY, ALGORITHM
-from auth.schemas import UserInDBSchema
+from db.schemas.user_schemas import UserInDBSchema
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from auth.config import EMAIL_FROM, EMAIL_PASSWORD 
 
 
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    print(f"Checking password: {plain_password}")
-    print(f"Against hash: {hashed_password}")
-    
     try:
         return pwd_context.verify(plain_password, hashed_password)
     except Exception as e:
         print(f"Password verification failed: {str(e)}")
         return False
 
+
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
+
 
 async def get_user(session: Session, username: str) -> UserInDBSchema | None:
     query = select(userModel).filter(userModel.username == username)
@@ -44,11 +42,13 @@ async def get_user(session: Session, username: str) -> UserInDBSchema | None:
         )
     return None
 
+
 async def authenticate_user(session: Session, username: str, password: str) -> UserInDBSchema | None:
     user = await get_user(session, username)
     if not user or not verify_password(password, user.hashed_password):
         return None
     return user
+
 
 async def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
@@ -58,7 +58,6 @@ async def create_access_token(data: dict, expires_delta: timedelta | None = None
 
 
 # Восстановление пароля пользователем
-
 async def send_reset_email(email: str, reset_link: str):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = "Сброс пароля"

@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from db.orm.user_orm import add_user
 from db.schemas.user_schemas import UserAddSchema
 from fastapi import APIRouter
-from api.v1.common_route import SessionDep
+from api.session_dependency import SessionDep
 
 
 router = APIRouter()

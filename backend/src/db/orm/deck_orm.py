@@ -1,4 +1,3 @@
-# Файл с описанием функций (методов) для создания запросов и команд базе данных
 from sqlalchemy.orm import Session
 from sqlalchemy import select, or_, select
 from db.models.deck_model import deckModel
@@ -8,7 +7,7 @@ from db.schemas.card_schemas import CardResponseSchema
 
 
 async def add_deck_with_cards(data: DeckWithCardsCreateSchema, session: Session, creator_user_id: int):
-    deck_image = "https://foni.papik.pro/uploads/posts/2024-10/foni-papik-pro-rxs7-p-kartinki-slon-dlya-detei-na-prozrachnom-fo-1.png"
+    deck_image = "https://lifehacker.ru/wp-content/uploads/2024/12/umirotvoryayushhaya_kartinka_dlya_samyx_bespokojnyx_pirozhochkov__1732808526.png"
     if data.deck.image_url.strip():
         deck_image = data.deck.image_url
     
@@ -44,10 +43,6 @@ async def add_deck_with_cards(data: DeckWithCardsCreateSchema, session: Session,
 
 
 async def get_deck_information_by_id(deck_id: int, creator_user_id: int, session: Session) -> DeckWithCardsResponseSchema:
-    """
-    Возвращает колоду и связанные карточки в формате DeckWithCardsCreateSchema
-    для использования при редактировании колоды
-    """
     deck_query = await session.execute(
         select(deckModel).where(
             (deckModel.id == deck_id) &
@@ -101,7 +96,7 @@ async def update_deck_with_cards(deck_id: int, data: DeckWithCardsUpdateSchema, 
     deck.title = data.deck.title
     deck.category = data.deck.category
     deck.description = data.deck.description
-    deck.image_url = data.deck.image_url or "https://foni.papik.pro/uploads/posts/2024-10/foni-papik-pro-rxs7-p-kartinki-slon-dlya-detei-na-prozrachnom-fo-1.png"
+    deck.image_url = data.deck.image_url or "https://lifehacker.ru/wp-content/uploads/2024/12/umirotvoryayushhaya_kartinka_dlya_samyx_bespokojnyx_pirozhochkov__1732808526.png"
     deck.is_public = data.deck.is_public
     deck.difficulty = data.deck.difficulty
     
@@ -139,23 +134,6 @@ async def update_deck_with_cards(deck_id: int, data: DeckWithCardsUpdateSchema, 
     
     await session.commit()
     return len(data.cards)
-
-
-
-async def add_deck(data: DeckAddSchema, session: Session, creator_user_id):
-    image_url= "https://foni.papik.pro/uploads/posts/2024-10/foni-papik-pro-rxs7-p-kartinki-slon-dlya-detei-na-prozrachnom-fo-1.png" if data.image_url=="" else data.image_url
-    new_deck = deckModel(
-        creator_user_id=creator_user_id,
-        title=data.title,
-        category=data.category,
-        description=data.description,
-        image_url=image_url,
-        is_public=data.is_public,
-        difficulty=data.difficulty
-    )
-    session.add(new_deck)
-    await session.commit()
-    return {"ok": True}
 
 
 async def get_decks(session: Session):

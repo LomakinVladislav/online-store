@@ -1,13 +1,12 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, status
-from auth.schemas import UserInDBSchema
+from db.schemas.user_schemas import UserInDBSchema
 from fastapi import APIRouter, Depends
 from auth.dependencies import get_current_active_user
 from db.orm.deck_orm import add_deck_with_cards, get_decks, get_deck_by_id, get_my_decks, get_search_decks, get_deck_information_by_id, update_deck_with_cards
 from db.orm.favorites_decks_orm import add_favorite_deck, delete_favorite_deck, get_favorite_decks
 from db.schemas.deck_schemas import DeckWithCardsCreateSchema, DeckWithCardsResponseSchema, DeckWithCardsUpdateSchema
-from db.schemas.favorites_decks_schemas import FavoritesDecksSchema
-from api.v1.common_route import SessionDep
+from api.session_dependency import SessionDep
 
 router = APIRouter()
 
@@ -19,7 +18,7 @@ async def get_decks_api(session: SessionDep):
 
 
 @router.post("/decks")
-async def add_deck_api(
+async def add_deck_with_cards_api(
     data: DeckWithCardsCreateSchema, 
     session: SessionDep, 
     current_user: UserInDBSchema = Depends(get_current_active_user)
