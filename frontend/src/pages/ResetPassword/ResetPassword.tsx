@@ -231,7 +231,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ isDarkMode, toggleTheme }
             </Form.Item>
 
             <div style={{ textAlign: 'center' }}>
-              <Link to="/auth">Вернуться к входу</Link>
+              <Link to="/auth">Вернуться к аутентификации</Link>
             </div>
           </Form>
         </div>

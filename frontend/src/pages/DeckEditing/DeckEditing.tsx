@@ -128,8 +128,10 @@ const validateCards = (): boolean => {
       const card = cards[i];
       const errors = [];
       
-      if (!card.front_text.trim()) errors.push("Текст лицевой стороны");
-      if (!card.back_text.trim()) errors.push("Текст обратной стороны");
+      if (!card.front_text.trim()) errors.push("Английское слово");
+      if (!card.transcription.trim()) errors.push("Транскрипция");
+      if (!card.back_text.trim()) errors.push("Перевод");
+      if (!card.image_url.trim()) errors.push("Изображение");
       
       if (errors.length > 0) {
         messageApi.error(`Заполните обязательные поля в карточке ${i + 1}: ${errors.join(", ")}`);
@@ -327,7 +329,7 @@ return (
                       <Input
                         value={card.front_text}
                         onChange={e => updateCard(index, 'front_text', e.target.value)}
-                        placeholder="Перевод"
+                        placeholder="Слово на русском"
                       />
                     </Form.Item>
                   </Col>
