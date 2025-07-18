@@ -50,7 +50,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ isDarkMode, toggleTheme }
     setIsLoading(true);
     
     try {
-      await api.post('/reset_password', {
+      await api.post('/auth/reset_password', {
         token,
         new_password: values.newPassword
       }, {skipRedirect: true});

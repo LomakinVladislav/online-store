@@ -24,7 +24,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isDarkMode, toggleTheme
     setIsLoading(true);
     
     try {
-      const response = await api.post('/forgot_password', {email: values.email}, {skipRedirect: true});
+      const response = await api.post('/auth/forgot_password', {email: values.email}, {skipRedirect: true});
 
       messageApi.success({
         content: response.data.message || 'Reset link sent successfully',
