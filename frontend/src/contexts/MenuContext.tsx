@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, ReactNode } from 'react';
 import { MenuContextProps } from '@/types';
 
 const MenuContext = createContext<MenuContextProps | undefined>(undefined);
 
-export const MenuProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const MenuProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [activeMenuKey, setActiveMenuKey] = useState<string | null>(null);
   
   const contextValue = useMemo(() => ({

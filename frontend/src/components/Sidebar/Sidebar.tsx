@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { Button, Menu } from 'antd';
 import {
   HomeOutlined,
   MenuFoldOutlined,
@@ -6,25 +7,25 @@ import {
   BookOutlined,
   StarOutlined,
 } from '@ant-design/icons';
-import { Button, Menu, Layout } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { useMenu  } from '../../contexts/MenuContext';
+import { useMenu } from '../../contexts/MenuContext';
+import { MenuItem } from '@/types';
 
 const SidebarComponent: React.FC = () => {
   const navigate = useNavigate();
   const { activeMenuKey, setActiveMenuKey } = useMenu();
   const [collapsed, setCollapsed] = useState(false);
 
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
+  const toggleCollapsed = useCallback(() => {
+    setCollapsed(prev => !prev);
+  }, []);
 
-  const handleMenuClick = (key: string, path: string) => {
+  const handleMenuClick = useCallback((key: string, path: string) => {
     setActiveMenuKey(key);
     navigate(path);
-  };
+  }, [setActiveMenuKey, navigate]);
 
-  const items = [
+  const items: MenuItem[] = useMemo(() => [
     {
       key: 'sidebar-home',
       icon: <HomeOutlined />,
@@ -43,7 +44,7 @@ const SidebarComponent: React.FC = () => {
       label: 'Избранное',
       onClick: () => handleMenuClick('sidebar-favorites', '/favorites')
     }
-  ];
+  ], [handleMenuClick]);
 
   return (
     <div>

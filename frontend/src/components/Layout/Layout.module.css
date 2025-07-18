@@ -1,10 +1,10 @@
-.app-window {
+.appWindow {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
   }  
 
-.main-container {
+.mainContainer {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -12,7 +12,7 @@
     overflow: hidden;
 }
 
-.main-content {
+.mainContent {
     display: flex;
     padding: 1em;
     width: 100%;

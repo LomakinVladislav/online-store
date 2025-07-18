@@ -1,25 +1,19 @@
-import React, { ReactNode, useState } from 'react';
+import React from 'react';
 import { Layout } from 'antd';
-import styles from './Layout.module.css'
+import styles from './Layout.module.css';
 import Header from '../Header/Header';
 import SideBar from '../Sidebar/Sidebar';
 import { MenuProvider } from '../../contexts/MenuContext';
-
-interface LayoutComponentProps {
-  children?: ReactNode;
-  isDarkMode: boolean;
-  toggleTheme: () => void;
-}
-
+import { LayoutComponentProps } from '@/types';
 
 const LayoutComponent: React.FC<LayoutComponentProps> = ({ children, isDarkMode, toggleTheme }) => {
   return (
     <MenuProvider>
-      <div className={styles[`app-window`]}>
+      <div className={styles.appWindow}>
         <Layout style={{ height: "100vh" }}>
-          <div className={styles[`main-container`]}>
+          <div className={styles.mainContainer}>
             <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-            <div className={styles[`main-content`]}>
+            <div className={styles.mainContent}>
               <SideBar />
               {children}
             </div>
