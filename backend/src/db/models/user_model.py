@@ -16,6 +16,5 @@ class userModel(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     decks = relationship("deckModel", back_populates="users")
-    userdecks = relationship("userdeckModel", back_populates="users")
     favorites_decks = relationship("favoritesDecksModel", back_populates="users", passive_deletes=True)
     reset_passwords = relationship("resetPasswordModel", back_populates="users", passive_deletes=True)
