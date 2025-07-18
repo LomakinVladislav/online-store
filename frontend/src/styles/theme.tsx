@@ -15,8 +15,6 @@ export const lightThemeConfig: ThemeConfig = {
     },
     Card: {
       colorBgContainer: '#97c3fc',
-      // bodyPadding: 15, Более компактный вариант формы создания набора 
-      // actionsLiMargin: '5px',
     },
   },
 };
