@@ -59,7 +59,7 @@ const DeckEditing: React.FC = () => {
     useEffect(() => {
         const fetchDeckData = async () => {
         try {
-            const response = await api.get(`/decks/${deckId}/information/`);
+            const response = await api.get(`/decks/${deckId}/information`);
             const { deck, cards: deckCards } = response.data;
             
             setDeckData(deck);
@@ -170,7 +170,7 @@ const handleSubmit = async (values: FormValues) => {
         }))
       };
 
-      const response = await api.put(`/decks/${deckId}/`, payload);
+      const response = await api.put(`/decks/${deckId}`, payload);
       
         if (response.status === 200) {
             messageApi.success('Набор успешно обновлен');

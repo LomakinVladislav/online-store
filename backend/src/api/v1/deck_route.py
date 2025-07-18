@@ -12,7 +12,7 @@ from api.v1.common_route import SessionDep
 router = APIRouter()
 
 
-@router.get("/decks/")
+@router.get("/decks")
 async def get_decks_api(session: SessionDep):
     result = await get_decks(session=session)
     return result

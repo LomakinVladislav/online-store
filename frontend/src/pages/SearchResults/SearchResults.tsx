@@ -37,7 +37,7 @@ const SearchResults = () => {
         if (query) {
           try {
             setSearchLoading(true);
-            const response = await api.get<IDeckData[]>(`http://127.0.0.1:8000/decks/search?query=${query}`, {
+            const response = await api.get<IDeckData[]>(`/decks/search?query=${query}`, {
               skipRedirect: true
             } as ICustomAxiosConfig);
             setSearchResults(response.data);

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import type { FormProps } from 'antd';
-import { Button, Checkbox, Form, Input, Switch, Layout, message, Space, Radio } from 'antd';
+import { Button, Form, Input, Switch, Layout, message, Space, Radio } from 'antd';
 import styles from "./Authorization.module.css"
 import axios from 'axios';
+import api from "../../api/api"
 
 
 type LoginFieldType = {
@@ -43,10 +44,11 @@ type AuthorizationProps = {
         formData.append('username', values.username || '');
         formData.append('password', values.password || '');
   
-        const response = await axios.post(
-          'http://127.0.0.1:8000/auth/token',
+        const response = await api.post(
+          '/auth/token',
           formData.toString(),
           {
+            skipRedirect: true,
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
             }
@@ -76,19 +78,15 @@ type AuthorizationProps = {
           return;
         }
   
-        await axios.post(
-          'http://127.0.0.1:8000/users',
+        await api.post(
+          '/users',
           {
             username: values.username,
             email: values.email,
             full_name: values.full_name,
             password: values.password,
           },
-          {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
+          {skipRedirect: true}
         );
   
         messageApi.success({

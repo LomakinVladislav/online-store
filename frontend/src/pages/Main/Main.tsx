@@ -34,7 +34,7 @@ const Main: React.FC = () => {
   const fetchDecks = async () => {
     try {
       setDecksLoading(true);
-      const response = await api.get<IDeckData[]>('http://127.0.0.1:8000/decks', {
+      const response = await api.get<IDeckData[]>('/decks', {
         skipRedirect: true
       } as ICustomAxiosConfig);
       setDecks(response.data);

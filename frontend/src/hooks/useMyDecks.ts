@@ -17,7 +17,7 @@ export const useMyDecks = () => {
 
       try {
         setLoading(true);
-        const response = await api.get('/decks/my_decks/');
+        const response = await api.get('/decks/my_decks');
         const deckIds = response.data.map((deck: any) => deck.id);
         setMyDecks(deckIds);
       } catch (err) {

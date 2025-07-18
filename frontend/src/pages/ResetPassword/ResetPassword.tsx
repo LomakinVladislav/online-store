@@ -32,8 +32,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ isDarkMode, toggleTheme }
       }
       
       try {
-        await api.get(`/auth/validate_reset_token?reset_token=${token}`,
-        {
+        await api.get(`/auth/validate_reset_token?reset_token=${token}`, {
             skipRedirect: true
         });
         setTokenValid(true);

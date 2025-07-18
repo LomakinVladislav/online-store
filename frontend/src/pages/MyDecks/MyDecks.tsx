@@ -29,7 +29,7 @@ const MyDecks: React.FC = () => {
   const fetchDecks = async () => {
     try {
       setDecksLoading(true);
-      const response = await api.get<IDeckData[]>('http://127.0.0.1:8000/decks/my_decks');
+      const response = await api.get<IDeckData[]>('/decks/my_decks');
       setDecks(response.data);
     } catch (error) {
       console.error('Error fetching cards:', error);

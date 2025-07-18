@@ -118,7 +118,7 @@ const DeckCreation: React.FC = () => {
           cards: cards
         };
   
-        const response = await api.post('/decks/', payload);
+        const response = await api.post('/decks', payload);
         
         if (response.status === 200 || response.status === 201) {
             messageApi.success({

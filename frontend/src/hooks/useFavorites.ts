@@ -20,7 +20,7 @@ export const useFavorites = () => {
   const fetchFavorites = async () => {
     try {
       setFavoritesLoading(true);
-      const response = await api.get<number[]>('http://127.0.0.1:8000/decks/favorites');
+      const response = await api.get<number[]>('/decks/favorites');
       setFavorites(response.data);
     } catch (error) {
       if (isAxiosError(error)) {

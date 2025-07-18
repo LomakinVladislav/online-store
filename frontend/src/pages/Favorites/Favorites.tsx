@@ -34,8 +34,8 @@ const Favorites: React.FC = () => {
     try {
       setDecksLoading(true);
       const [publicDecks, myDecks] = await Promise.all([
-        api.get<IDeckData[]>('http://127.0.0.1:8000/decks'),
-        api.get<IDeckData[]>('http://127.0.0.1:8000/decks/my_decks')
+        api.get<IDeckData[]>('/decks'),
+        api.get<IDeckData[]>('/decks/my_decks')
       ]);
   
       const combinedDecks = [...publicDecks.data, ...myDecks.data];
