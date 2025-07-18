@@ -8,3 +8,11 @@
  ```cd .\backend\```
  2. Запустить файл src\main.py
  ```python .\src\main.py```
+
+
+## Запуск frontend'a
+
+ 1. Перейти в папку frontend
+ ```cd .\frontend\```
+ 2. Выполнить команду npm start
+ ```npm start```
