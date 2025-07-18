@@ -26,6 +26,7 @@ const HeaderComponent = ({ isDarkMode, toggleTheme }: HeaderProps) => {
     if (trimmedValue) {
       navigate(`/search?query=${encodeURIComponent(trimmedValue)}`);
     }
+    setSearchValue('')
   }, [searchValue, navigate]);
 
   const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
