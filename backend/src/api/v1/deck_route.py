@@ -23,7 +23,7 @@ async def add_deck_api(
     data: DeckWithCardsCreateSchema, 
     session: SessionDep, 
     current_user: UserInDBSchema = Depends(get_current_active_user)
-    )  -> List[FavoritesDecksSchema] : # Удалить List[FavoritesDecksSchema]? это бред какой-то зачем оно здесь
+    ):
     creator_user_id = current_user.id 
     result = await add_deck_with_cards(data=data, session=session, creator_user_id=creator_user_id)
     return result
