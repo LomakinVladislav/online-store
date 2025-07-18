@@ -18,7 +18,7 @@ async def get_decks_api(session: SessionDep):
     return result
 
 
-@router.post("/decks/")
+@router.post("/decks")
 async def add_deck_api(
     data: DeckWithCardsCreateSchema, 
     session: SessionDep, 
@@ -29,7 +29,7 @@ async def add_deck_api(
     return result
 
 
-@router.put("/decks/{deck_id}/")
+@router.put("/decks/{deck_id}")
 async def update_deck_with_cards_api(
     deck_id: int,
     data: DeckWithCardsUpdateSchema, 
@@ -63,7 +63,7 @@ async def get_deck_information_by_id_api(deck_id: int, session: SessionDep, curr
     return result
 
 
-@router.get("/decks/favorites/", response_model=List[int])
+@router.get("/decks/favorites", response_model=List[int])
 async def get_favorite_deck_api(session: SessionDep, current_user: UserInDBSchema = Depends(get_current_active_user)):
     user_id = current_user.id 
     result = await get_favorite_decks(session=session, user_id=user_id)
@@ -95,14 +95,14 @@ async def get_deck_by_id_api(deck_id: int, session: SessionDep, current_user: Us
     return result
 
 
-@router.get("/decks/my_decks/")
+@router.get("/decks/my_decks")
 async def get_my_decks_api(session: SessionDep, current_user: UserInDBSchema = Depends(get_current_active_user)):
     user_id = current_user.id 
     result = await get_my_decks(user_id=user_id, session=session)
     return result
 
 
-@router.get("/decks/search/")
+@router.get("/decks/search")
 async def get_search_decks_api(query: str, session: SessionDep):
     result = await get_search_decks(query=query, session=session)
     return result
