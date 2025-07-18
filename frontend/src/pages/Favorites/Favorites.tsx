@@ -1,28 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Button, Modal, Spin } from 'antd';
 import { useNavigate } from "react-router-dom";
 import styles from './Favorites.module.css';
 import { useMenu } from '../../contexts/MenuContext';
 import api from '../../api/api';
-import { IDeckData } from '@/types';
-import { useFavorites } from '../../hooks/useFavorites';
 import { DeckList } from '../../components/DeckList/DeckList';
+import { useFavorites } from '../../hooks/useFavorites';
 import { useMyDecks } from '../../hooks/useMyDecks';
-
-
+import { IDeckData, UseFavoritesResult, UseMyDecksResult, DeckId } from '@/types';
 
 const Favorites: React.FC = () => {
   const { setActiveMenuKey } = useMenu();
-  const [decksLoading, setDecksLoading] = useState<boolean>(true);
+  const [decksLoading, setDecksLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [decks, setDecks] = useState<IDeckData[]>([]);
-  const [confirmDeckId, setConfirmDeckId] = useState<number | null>(null);
-  const { myDecks, loading: myDecksLoading } = useMyDecks()
+  const [confirmDeckId, setConfirmDeckId] = useState<DeckId | null>(null);
+  const { myDecks, loading: myDecksLoading }: UseMyDecksResult = useMyDecks();
+  const { favorites, favoritesLoading, addFavorite, removeFavorite }: UseFavoritesResult = useFavorites();
   const navigate = useNavigate();
-  const { favorites, favoritesLoading, loadingFavorites, handleAddFavorite, handleDeleteFavorite } = useFavorites();
 
-  const favoriteDecks = decks.filter(deck => favorites.includes(deck.id));
-
+  const favoriteDecks = decks.filter(deck => favorites.has(deck.id));
   const isLoading = decksLoading || favoritesLoading || myDecksLoading;
 
   useEffect(() => {
@@ -30,43 +27,41 @@ const Favorites: React.FC = () => {
     fetchDecks();
   }, []);
 
-  const fetchDecks = async () => {
+  const fetchDecks = useCallback(async () => {
     try {
       setDecksLoading(true);
-      const [publicDecks, myDecks] = await Promise.all([
+      
+      const [publicDecks, myDecksResponse] = await Promise.all([
         api.get<IDeckData[]>('/decks'),
         api.get<IDeckData[]>('/decks/my_decks')
       ]);
-  
-      const combinedDecks = [...publicDecks.data, ...myDecks.data];
-      const uniqueDecks = Array.from(
-        new Map(combinedDecks.map(deck => [deck.id, deck])).values()
-      );
-      
-      setDecks(uniqueDecks);
-    } catch (error) {
-      console.error('Error fetching cards:', error);
+
+      const decksMap = new Map<DeckId, IDeckData>();
+      [...publicDecks.data, ...myDecksResponse.data].forEach(deck => {
+        decksMap.set(deck.id, deck);
+      });
+
+      setDecks(Array.from(decksMap.values()));
+    } catch (err) {
+      console.error('Error fetching decks:', err);
       setError('Не удалось загрузить колоды');
     } finally {
       setDecksLoading(false);
     }
-  };
+  }, []);
 
-  const toggleFavorite = (deckId: number, e: React.MouseEvent) => {
-    e.stopPropagation(); 
-    
-    if (favorites.includes(deckId)) {
-      setConfirmDeckId(deckId);
-    } else {
-      handleAddFavorite(deckId);
-    }
+  const toggleFavorite = (deckId: DeckId, e: React.MouseEvent) => {
+    e.stopPropagation();
+    favorites.has(deckId) 
+      ? setConfirmDeckId(deckId) 
+      : addFavorite(deckId);
   };
 
   const confirmRemoveFavorite = async () => {
     if (confirmDeckId === null) return;
     
     try {
-      await handleDeleteFavorite(confirmDeckId);
+      await removeFavorite(confirmDeckId);
     } catch (error) {
       console.error('Error removing favorite:', error);
     } finally {
@@ -74,23 +69,21 @@ const Favorites: React.FC = () => {
     }
   };
 
-  const cancelRemoveFavorite = () => {
-    setConfirmDeckId(null);
-  };
+  const cancelRemoveFavorite = () => setConfirmDeckId(null);
 
-  const handleCardClick = (deckId: number) => {
+  const handleCardClick = (deckId: DeckId) => {
     setActiveMenuKey(null);
     navigate(`/decks/${deckId}/content`);
+  };
+
+  const handleEditClick = (deckId: DeckId) => {
+    setActiveMenuKey(null);
+    navigate(`/decks/${deckId}/deck_editing`);
   };
 
   const goToMain = () => {
     setActiveMenuKey('sidebar-home');
     navigate('/main');
-  };
-
-  const handleEditClick = (deckId: number) => {
-    setActiveMenuKey(null);
-    navigate(`/decks/${deckId}/deck_editing`);
   };
 
   return (
@@ -108,14 +101,16 @@ const Favorites: React.FC = () => {
       </Modal>
 
       {isLoading ? (
-        <div className={styles.loadContainer}><Spin size="large" tip="Загрузка данных..." /></div>
+        <div className={styles.loadContainer}>
+          <Spin size="large" tip="Загрузка данных..." />
+        </div>
       ) : error ? (
-        <div>{error}</div>
+        <div className={styles.errorContainer}>{error}</div>
       ) : favoriteDecks.length > 0 ? (
         <DeckList 
           decks={favoriteDecks}
           favorites={favorites}
-          loadingFavorites={loadingFavorites}
+          loadingFavorites={{}}
           onToggleFavorite={toggleFavorite}
           onCardClick={handleCardClick}
           myDecks={myDecks}
@@ -126,10 +121,10 @@ const Favorites: React.FC = () => {
           <h1>В вашем избранном пока нет ни одной колоды</h1>
           <Button
             type="primary" 
-            style={{ marginBottom: 16 }}
+            className={styles.mainButton}
             onClick={goToMain}
           >
-            На главную
+            На главную  
           </Button>
         </div>  
       )}

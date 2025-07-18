@@ -1,17 +1,18 @@
-import React, { createContext, useContext, useState } from 'react';
-
-interface MenuContextProps {
-  activeMenuKey: string | null;
-  setActiveMenuKey: (key: string | null) => void;
-}
+import React, { createContext, useContext, useState, useMemo } from 'react';
+import { MenuContextProps } from '@/types';
 
 const MenuContext = createContext<MenuContextProps | undefined>(undefined);
 
 export const MenuProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activeMenuKey, setActiveMenuKey] = useState<string | null>(null);
+  
+  const contextValue = useMemo(() => ({
+    activeMenuKey, 
+    setActiveMenuKey
+  }), [activeMenuKey]);
 
   return (
-    <MenuContext.Provider value={{ activeMenuKey, setActiveMenuKey }}>
+    <MenuContext.Provider value={contextValue}>
       {children}
     </MenuContext.Provider>
   );

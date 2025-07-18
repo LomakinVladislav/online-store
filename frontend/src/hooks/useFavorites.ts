@@ -1,31 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getValidToken } from '../utils/auth';
 import api from '../api/api';
 import { isAxiosError } from 'axios';
+import { UseFavoritesResult, DeckId } from '@/types';
 
+export const useFavorites = (): UseFavoritesResult => {
+  const [favorites, setFavorites] = useState<Set<DeckId>>(new Set());
+  const [favoritesLoading, setFavoritesLoading] = useState(true);
+  const [loadingFavorites, setLoadingFavorites] = useState<Record<DeckId, boolean>>({});
 
-export const useFavorites = () => {
-  const [favorites, setFavorites] = useState<number[]>([]);
-  const [favoritesLoading, setFavoritesLoading] = useState<boolean>(true);
-  const [loadingFavorites, setLoadingFavorites] = useState<{ [key: number]: boolean }>({});
-
-  useEffect(() => {
-    if (getValidToken()) {
-      fetchFavorites();
-    } else {
-      setFavoritesLoading(false);
-    }
-  }, []);
-
-  const fetchFavorites = async () => {
+  const fetchFavorites = useCallback(async () => {
     try {
       setFavoritesLoading(true);
-      const response = await api.get<number[]>('/decks/favorites');
-      setFavorites(response.data);
+      const response = await api.get<DeckId[]>('/decks/favorites');
+      setFavorites(new Set(response.data));
     } catch (error) {
       if (isAxiosError(error)) {
         if (error.response?.status === 401) {
-          setFavorites([]);
+          setFavorites(new Set());
         } else {
           console.error('Error fetching favorites:', error);
         }
@@ -35,42 +27,48 @@ export const useFavorites = () => {
     } finally {
       setFavoritesLoading(false);
     }
-  };
+  }, []);
 
-  const handleAddFavorite = async (deckId: number) => {
-    await api.post(`decks/favorites/${deckId}`);
-    setFavorites(prev => [...prev, deckId]);
-  };
+  useEffect(() => {
+    if (getValidToken()) fetchFavorites();
+    else setFavoritesLoading(false);
+  }, [fetchFavorites]);
 
-  const handleDeleteFavorite = async (deckId: number) => {
-    await api.delete(`decks/favorites/${deckId}`);
-    setFavorites(prev => prev.filter(id => id !== deckId));
-  };
-
-  const toggleFavorite = async (deckId: number, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const addFavorite = useCallback(async (deckId: DeckId) => {
     setLoadingFavorites(prev => ({ ...prev, [deckId]: true }));
-
+    
     try {
-      if (favorites.includes(deckId)) {
-        await handleDeleteFavorite(deckId);
-      } else {
-        await handleAddFavorite(deckId);
-      }
+      await api.post(`decks/favorites/${deckId}`);
+      setFavorites(prev => new Set(prev).add(deckId));
     } catch (error) {
-      console.error('Error toggling favorite:', error);
+      console.error('Error adding favorite:', error);
     } finally {
       setLoadingFavorites(prev => ({ ...prev, [deckId]: false }));
     }
-  };
+  }, []);
+
+  const removeFavorite = useCallback(async (deckId: DeckId) => {
+    setLoadingFavorites(prev => ({ ...prev, [deckId]: true }));
+    
+    try {
+      await api.delete(`decks/favorites/${deckId}`);
+      setFavorites(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(deckId);
+        return newSet;
+      });
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+    } finally {
+      setLoadingFavorites(prev => ({ ...prev, [deckId]: false }));
+    }
+  }, []);
 
   return {
     favorites,
     favoritesLoading,
     loadingFavorites,
-    handleAddFavorite,
-    handleDeleteFavorite,
-    toggleFavorite,
-    fetchFavorites
+    addFavorite,
+    removeFavorite
   };
 };

@@ -1,42 +1,43 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getValidToken } from '../utils/auth';
 import api from '../api/api';
 import { isAxiosError } from 'axios';
+import { UseMyDecksResult } from '@/types';
 
-export const useMyDecks = () => {
-  const [myDecks, setMyDecks] = useState<number[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+export const useMyDecks = (): UseMyDecksResult => {
+  const [myDecks, setMyDecks] = useState<Set<number>>(new Set());
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchMyDecks = async () => {
-      if (!getValidToken()) {
-        setLoading(false);
-        return;
-      }
+  const fetchMyDecks = useCallback(async () => {
+    if (!getValidToken()) {
+      setLoading(false);
+      return;
+    }
 
-      try {
-        setLoading(true);
-        const response = await api.get('/decks/my_decks');
-        const deckIds = response.data.map((deck: any) => deck.id);
-        setMyDecks(deckIds);
-      } catch (err) {
-        if (isAxiosError(err)) {
-          if (err.response?.status === 401) {
-            setMyDecks([]);
-          } else {
-            setError('Ошибка при загрузке ваших колод');
-          }
+    try {
+      setLoading(true);
+      const response = await api.get('/decks/my_decks');
+      const deckIds = response.data.map((deck: any) => deck.id);
+      setMyDecks(new Set(deckIds));
+    } catch (err) {
+      if (isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          setMyDecks(new Set());
         } else {
-          setError('Неизвестная ошибка');
+          setError('Ошибка при загрузке ваших колод');
         }
-      } finally {
-        setLoading(false);
+      } else {
+        setError('Неизвестная ошибка');
       }
-    };
-
-    fetchMyDecks();
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchMyDecks();
+  }, [fetchMyDecks]);
 
   return { myDecks, loading, error };
 };

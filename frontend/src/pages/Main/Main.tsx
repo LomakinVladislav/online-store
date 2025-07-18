@@ -1,28 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from './Main.module.css'
-import { useMenu  } from '../../contexts/MenuContext';
+import styles from './Main.module.css';
+import { useMenu } from '../../contexts/MenuContext';
 import api from '../../api/api';
-import { AxiosRequestConfig } from 'axios';
-import { useFavorites } from '../../hooks/useFavorites';
 import { DeckList } from '../../components/DeckList/DeckList';
-import { IDeckData } from '@/types';
 import { Spin } from "antd";
 import { useMyDecks } from '../../hooks/useMyDecks';
-
-
-interface ICustomAxiosConfig extends AxiosRequestConfig {
-  skipRedirect?: boolean;
-}
+import { useFavorites } from '../../hooks/useFavorites';
+import { IDeckData, UseFavoritesResult, DeckId, UseMyDecksResult } from '@/types';
 
 const Main: React.FC = () => {
   const { setActiveMenuKey } = useMenu();
-  const [decksLoading, setDecksLoading] = useState<boolean>(true);
+  const [decksLoading, setDecksLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [decks, setDecks] = useState<IDeckData[]>([]);
   const navigate = useNavigate();
-  const { myDecks, loading: myDecksLoading } = useMyDecks()
-  const {favorites, favoritesLoading, loadingFavorites, toggleFavorite } = useFavorites();
+  const { myDecks, loading: myDecksLoading }: UseMyDecksResult = useMyDecks();
+  const { favorites, favoritesLoading, addFavorite, removeFavorite }: UseFavoritesResult = useFavorites();
 
   const isLoading = decksLoading || favoritesLoading || myDecksLoading;
 
@@ -36,10 +30,10 @@ const Main: React.FC = () => {
       setDecksLoading(true);
       const response = await api.get<IDeckData[]>('/decks', {
         skipRedirect: true
-      } as ICustomAxiosConfig);
+      });
       setDecks(response.data);
-    } catch (error) {
-      console.error('Error fetching cards:', error);
+    } catch (err) {
+      console.error('Error fetching decks:', err);
       setError('Не удалось загрузить колоды');
     } finally {
       setDecksLoading(false);
@@ -56,24 +50,31 @@ const Main: React.FC = () => {
     navigate(`/decks/${deckId}/content`);
   };
 
+  const toggleFavorite = (deckId: DeckId, e: React.MouseEvent) => {
+    e.stopPropagation();
+    favorites.has(deckId) 
+      ? removeFavorite(deckId)
+      : addFavorite(deckId);
+  };
+
   return (
     <div className={styles.mainContainer}>
       {isLoading ? (
         <div className={styles.loadContainer}><Spin size="large" tip="Загрузка данных..." /></div>
       ) : error ? (
-        <div>{error}</div>
+        <div className={styles.errorContainer}>{error}</div>
       ) : decks.length > 0 ? (
         <DeckList 
           decks={decks}
           favorites={favorites}
-          loadingFavorites={loadingFavorites}
+          loadingFavorites={{}}
           onToggleFavorite={toggleFavorite}
           onCardClick={handleCardClick}
           myDecks={myDecks}
           onEditClick={handleEditClick}
         />
       ) : (
-        <div>Нет доступных колод</div>
+        <div className={styles.emptyContainer}>Нет доступных колод</div>
       )}
     </div>
   )

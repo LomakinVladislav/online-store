@@ -1,21 +1,16 @@
 import React from 'react';
 import { List } from 'antd';
 import { DeckCard } from '../DeckCard/DeckCard';
-import { IDeckData } from '@/types';
-
-
-interface DeckListProps {
-  decks: IDeckData[];
-  favorites: number[];
-  loadingFavorites: { [key: number]: boolean };
-  myDecks: number[];
-  onToggleFavorite: (deckId: number, e: React.MouseEvent) => void;
-  onCardClick: (deckId: number) => void;
-  onEditClick: (deckId: number) => void;
-}
+import { DeckListProps } from '@/types';
 
 export const DeckList: React.FC<DeckListProps> = ({
-  decks, favorites, loadingFavorites, onToggleFavorite, onCardClick, myDecks, onEditClick,
+  decks, 
+  favorites, 
+  loadingFavorites, 
+  myDecks, 
+  onToggleFavorite, 
+  onCardClick, 
+  onEditClick,
 }) => {
   return (
     <List
@@ -25,11 +20,11 @@ export const DeckList: React.FC<DeckListProps> = ({
         <List.Item>
           <DeckCard
             deck={deck}
-            isFavorite={favorites.includes(deck.id)}
-            loadingFavorite={loadingFavorites[deck.id] || false}
+            isFavorite={favorites.has(deck.id)}
+            loadingFavorite={!!loadingFavorites[deck.id]}
             onToggleFavorite={onToggleFavorite}
             onClick={onCardClick}
-            isEditable={myDecks.includes(deck.id)}
+            isEditable={myDecks.has(deck.id)}
             onEditClick={onEditClick}
           />
         </List.Item>

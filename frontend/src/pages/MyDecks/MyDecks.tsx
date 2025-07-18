@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import styles from './MyDecks.module.css';
 import { useMenu } from '../../contexts/MenuContext';
 import api from '../../api/api';
-import { IDeckData } from '@/types';
-import { useFavorites } from '../../hooks/useFavorites';
+import { IDeckData, UseFavoritesResult, DeckId } from '@/types';
 import { DeckList } from '../../components/DeckList/DeckList';
+import { useFavorites } from '../../hooks/useFavorites';
 import { useMyDecks } from '../../hooks/useMyDecks';
 
 
@@ -17,7 +17,7 @@ const MyDecks: React.FC = () => {
   const [decks, setDecks] = useState<IDeckData[]>([]);
   const { myDecks, loading: myDecksLoading } = useMyDecks()
   const navigate = useNavigate();
-  const { favorites, favoritesLoading, loadingFavorites, toggleFavorite } = useFavorites();
+  const { favorites, favoritesLoading, addFavorite, removeFavorite }: UseFavoritesResult = useFavorites();
 
   const isLoading = decksLoading || favoritesLoading || myDecksLoading;
 
@@ -54,6 +54,13 @@ const MyDecks: React.FC = () => {
     navigate(`/decks/${deckId}/deck_editing`);
   };
 
+  const toggleFavorite = (deckId: DeckId, e: React.MouseEvent) => {
+    e.stopPropagation();
+    favorites.has(deckId) 
+      ? removeFavorite(deckId)
+      : addFavorite(deckId);
+  };
+
   return (
     <div className={styles.mainContainer}>
       {isLoading ? (
@@ -64,7 +71,7 @@ const MyDecks: React.FC = () => {
         <DeckList 
           decks={decks}
           favorites={favorites}
-          loadingFavorites={loadingFavorites}
+          loadingFavorites={{}}
           onToggleFavorite={toggleFavorite}
           onCardClick={handleCardClick}
           myDecks={myDecks}
