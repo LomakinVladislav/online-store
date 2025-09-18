@@ -6,8 +6,10 @@
 
  1. Перейти в папку backend
  ```cd .\backend\```
- 2. Запустить файл src\main.py
- ```python .\src\main.py```
+ 2. Перейти в витруальное окружение
+ ```.\venv\Scripts\activate```
+ 3. Запустить файл src\main.py
+ ```python .\src\main.py``
 
 
 ## Запуск frontend'a
