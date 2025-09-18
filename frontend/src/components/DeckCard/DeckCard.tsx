@@ -11,7 +11,6 @@ export const DeckCard: React.FC<DeckCardProps> = ({
   deck, 
   isFavorite, 
   loadingFavorite, 
-  isEditable, 
   onToggleFavorite, 
   onClick, 
   onEditClick
@@ -27,17 +26,7 @@ export const DeckCard: React.FC<DeckCardProps> = ({
             className={styles.cardImage}
           />
           <div className={styles.cardActions}>
-            {isEditable && (
-              <button 
-                className={styles.editButton}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEditClick?.(deck.id);
-                }}
-              >
-                <EditOutlined />
-              </button>
-            )}
+            
             
             <button 
               className={styles.favoriteButton}
