@@ -95,11 +95,7 @@ const DeckContent: React.FC = () => {
               />
             }
           >
-            {flipped ? (
-              <Meta title={currentCard.back_text} description={currentCard.transcription} />
-            ) : (
-              <Meta title={currentCard.front_text} />
-            )}
+            
           </Card>
           
           <div className={styles.cardCounter}>
