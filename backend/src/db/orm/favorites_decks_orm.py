@@ -10,7 +10,7 @@ async def add_favorite_deck(deck_id: int, user_id: int, session: Session):
     existing_favorite_deck = existing_favorite_deck.first()
     
     if existing_favorite_deck:
-        return {"ok": False, "message": "Эта колода уже добавлена в избранное для данного пользователя"}
+        return {"ok": False, "message": "Эта колода уже добавлена в корзину для данного пользователя"}
     new_favoite_deck = favoritesDecksModel(
         user_id=user_id,
         deck_id=deck_id,        

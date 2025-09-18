@@ -10,8 +10,8 @@ type ForgotPasswordFieldType = {
 };
 
 type ForgotPasswordProps = {
-    isDarkMode: boolean;
-    toggleTheme: () => void;
+  isDarkMode: boolean;
+  toggleTheme: () => void;
 };
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isDarkMode, toggleTheme }) => {
@@ -22,9 +22,9 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isDarkMode, toggleTheme
 
   const onFinish: FormProps<ForgotPasswordFieldType>['onFinish'] = async (values) => {
     setIsLoading(true);
-    
+
     try {
-      const response = await api.post('/auth/forgot_password', {email: values.email}, {skipRedirect: true});
+      const response = await api.post('/auth/forgot_password', { email: values.email }, { skipRedirect: true });
 
       messageApi.success({
         content: response.data.message || 'Reset link sent successfully',
@@ -65,22 +65,21 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isDarkMode, toggleTheme
             onChange={toggleTheme}
             checkedChildren="🌙"
             unCheckedChildren="☀️"
-          />  
+          />
         </div>
 
-        <div 
-          className={`${styles.logoContainer} ${
-            isDarkMode ? styles.logoContainerDark : styles.logoContainerLight
-          }`}
+        <div
+          className={`${styles.logoContainer} ${isDarkMode ? styles.logoContainerDark : styles.logoContainerLight
+            }`}
           onClick={() => navigate('/main')}
         >
-          <span className={styles.logoText}>Language Trainer</span>
+          <span className={styles.logoText}>ТехникТорг</span>
         </div>
       </div>
-      
+
       <div className={styles.authorizationContainer}>
-        <h1>Восстановление пароля  </h1>        
-        
+        <h1>Восстановление пароля  </h1>
+
         <div style={{ width: '100%', maxWidth: '500px' }}>
           <Form
             form={form}
@@ -94,13 +93,13 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isDarkMode, toggleTheme
               label="Введите ваш email"
               name="email"
               rules={[
-                { 
-                  required: true, 
-                  message: 'Пожалуйста, введите ваш email!' 
+                {
+                  required: true,
+                  message: 'Пожалуйста, введите ваш email!'
                 },
-                { 
-                  type: 'email', 
-                  message: 'Пожалуйста, введите корректный email' 
+                {
+                  type: 'email',
+                  message: 'Пожалуйста, введите корректный email'
                 }
               ]}
               className={styles.formItem}
@@ -110,9 +109,9 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isDarkMode, toggleTheme
 
             <Form.Item className={styles.formItem}>
               {contextHolder}
-              <Button 
-                type="primary" 
-                htmlType="submit" 
+              <Button
+                type="primary"
+                htmlType="submit"
                 className={styles.submitButton}
                 loading={isLoading}
               >

@@ -97,7 +97,7 @@ const Favorites: React.FC = () => {
         cancelText="Отмена"
         okButtonProps={{ danger: true }}
       >
-        <p>Вы уверены, что хотите удалить эту колоду из избранного?</p>
+        <p>Вы уверены, что хотите удалить этот товар из корзины?</p>
       </Modal>
 
       {isLoading ? (
@@ -118,7 +118,7 @@ const Favorites: React.FC = () => {
         />
       ) : (
         <div className={styles.warningContainer}>
-          <h1>В вашем избранном пока нет ни одной колоды</h1>
+          <h1>В вашей корзине пока нет ни одного товара</h1>
           <Button
             type="primary" 
             className={styles.mainButton}

@@ -22,133 +22,133 @@ type RegisterFieldType = {
 };
 
 type AuthorizationProps = {
-    isDarkMode: boolean;
-    toggleTheme: () => void;
+  isDarkMode: boolean;
+  toggleTheme: () => void;
 };
-  
 
-  const Authorization: React.FC<AuthorizationProps> = ({ isDarkMode, toggleTheme }) => {
-    const navigate = useNavigate();
-    const [messageApi, contextHolder] = message.useMessage();
-    const [formType, setFormType] = useState<'login' | 'register'>('login');
-    const [loginForm] = Form.useForm<LoginFieldType>();
-    const [registerForm] = Form.useForm<RegisterFieldType>();
 
-    const onFinishFailed: FormProps<LoginFieldType | RegisterFieldType>['onFinishFailed'] = (errorInfo) => {
-      console.log('Failed:', errorInfo);
-    };
+const Authorization: React.FC<AuthorizationProps> = ({ isDarkMode, toggleTheme }) => {
+  const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
+  const [formType, setFormType] = useState<'login' | 'register'>('login');
+  const [loginForm] = Form.useForm<LoginFieldType>();
+  const [registerForm] = Form.useForm<RegisterFieldType>();
 
-    const onFinishLogin: FormProps<LoginFieldType>['onFinish'] = async (values) => {
-      try {
-        const formData = new URLSearchParams();
-        formData.append('username', values.username || '');
-        formData.append('password', values.password || '');
-  
-        const response = await api.post(
-          '/auth/token',
-          formData.toString(),
-          {
-            skipRedirect: true,
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            }
+  const onFinishFailed: FormProps<LoginFieldType | RegisterFieldType>['onFinishFailed'] = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
+
+  const onFinishLogin: FormProps<LoginFieldType>['onFinish'] = async (values) => {
+    try {
+      const formData = new URLSearchParams();
+      formData.append('username', values.username || '');
+      formData.append('password', values.password || '');
+
+      const response = await api.post(
+        '/auth/token',
+        formData.toString(),
+        {
+          skipRedirect: true,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
           }
-        );
-  
-        localStorage.setItem('access_token', response.data.access_token);
-        navigate('/main');
-        
-      } catch (error) {
-        console.error('Ошибка авторизации:', error);
-        messageApi.error({
-          content: 'Ошибка авторизации. Проверьте данные',
-          duration: 3,
-        });
-      }
-    };
-
-
-    const onFinishRegister: FormProps<RegisterFieldType>['onFinish'] = async (values) => {
-      try {
-        if (values.password !== values.confirmPassword) {
-          messageApi.error({
-            content: 'Пароли не совпадают',
-            duration: 3,
-          });
-          return;
         }
-  
-        await api.post(
-          '/users',
-          {
-            username: values.username,
-            email: values.email,
-            full_name: values.full_name,
-            password: values.password,
-          },
-          {skipRedirect: true}
-        );
-  
-        messageApi.success({
-          content: 'Регистрация прошла успешно! Теперь войдите в систему',
-          duration: 3,
-        });
-        
-        setFormType('login');
-        registerForm.resetFields();
-        
-      } catch (error) {
-        console.error('Ошибка регистрации:', error);
-        
-        let errorMessage = 'Ошибка регистрации';
+      );
 
-        if (axios.isAxiosError(error)) {
-      if (error.response) {
-        const responseData = error.response.data;
-        
-        if (typeof responseData === 'string') {
-          errorMessage = responseData;
-        } else if (responseData.detail) {
-          if (typeof responseData.detail === 'string') {
-            errorMessage = responseData.detail;
-          } else if (Array.isArray(responseData.detail)) {
-            errorMessage = responseData.detail
-              .map((err: any) => err.msg || `Ошибка в поле ${err.loc.join('.')}: ${err.msg}`)
-              .join('; ');
-          } else {
-            errorMessage = JSON.stringify(responseData.detail);
-          }
-        } else if (responseData.message) {
-          errorMessage = responseData.message;
-        } else {
-          errorMessage = `Ошибка сервера: ${error.response.status}`;
-        }
-      } else if (error.request) {
-        errorMessage = 'Сервер не отвечает';
-      } else {
-        errorMessage = 'Ошибка при отправке запроса';
-      }
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
+      localStorage.setItem('access_token', response.data.access_token);
+      navigate('/main');
+
+    } catch (error) {
+      console.error('Ошибка авторизации:', error);
+      messageApi.error({
+        content: 'Ошибка авторизации. Проверьте данные',
+        duration: 3,
+      });
     }
-    
-    messageApi.error({
-      content: errorMessage,
-      duration: 3,
-    });
-  }
-};
-    
-      
-    const handleFormSwitch = (type: 'login' | 'register') => {
-      setFormType(type);
-      loginForm.resetFields();
+  };
+
+
+  const onFinishRegister: FormProps<RegisterFieldType>['onFinish'] = async (values) => {
+    try {
+      if (values.password !== values.confirmPassword) {
+        messageApi.error({
+          content: 'Пароли не совпадают',
+          duration: 3,
+        });
+        return;
+      }
+
+      await api.post(
+        '/users',
+        {
+          username: values.username,
+          email: values.email,
+          full_name: values.full_name,
+          password: values.password,
+        },
+        { skipRedirect: true }
+      );
+
+      messageApi.success({
+        content: 'Регистрация прошла успешно! Теперь войдите в систему',
+        duration: 3,
+      });
+
+      setFormType('login');
       registerForm.resetFields();
-    };
+
+    } catch (error) {
+      console.error('Ошибка регистрации:', error);
+
+      let errorMessage = 'Ошибка регистрации';
+
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          const responseData = error.response.data;
+
+          if (typeof responseData === 'string') {
+            errorMessage = responseData;
+          } else if (responseData.detail) {
+            if (typeof responseData.detail === 'string') {
+              errorMessage = responseData.detail;
+            } else if (Array.isArray(responseData.detail)) {
+              errorMessage = responseData.detail
+                .map((err: any) => err.msg || `Ошибка в поле ${err.loc.join('.')}: ${err.msg}`)
+                .join('; ');
+            } else {
+              errorMessage = JSON.stringify(responseData.detail);
+            }
+          } else if (responseData.message) {
+            errorMessage = responseData.message;
+          } else {
+            errorMessage = `Ошибка сервера: ${error.response.status}`;
+          }
+        } else if (error.request) {
+          errorMessage = 'Сервер не отвечает';
+        } else {
+          errorMessage = 'Ошибка при отправке запроса';
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      messageApi.error({
+        content: errorMessage,
+        duration: 3,
+      });
+    }
+  };
 
 
-    return (
-      <Layout style={{ minHeight: "100vh" }}>
+  const handleFormSwitch = (type: 'login' | 'register') => {
+    setFormType(type);
+    loginForm.resetFields();
+    registerForm.resetFields();
+  };
+
+
+  return (
+    <Layout style={{ minHeight: "100vh" }}>
       <div className={styles.logoAndToggleContainer}>
         <div className={styles.themeToggle}>
           <Switch
@@ -156,21 +156,20 @@ type AuthorizationProps = {
             onChange={toggleTheme}
             checkedChildren="🌙"
             unCheckedChildren="☀️"
-          />  
+          />
         </div>
 
-        <div 
-          className={`${styles.logoContainer} ${
-            isDarkMode ? styles.logoContainerDark : styles.logoContainerLight
-          }`}
+        <div
+          className={`${styles.logoContainer} ${isDarkMode ? styles.logoContainerDark : styles.logoContainerLight
+            }`}
           onClick={() => navigate('/main')}
         >
-          <span className={styles.logoText}>Language Trainer</span>
+          <span className={styles.logoText}>ТехникТорг</span>
         </div>
       </div>
       <div className={styles.authorizationContainer}>
         <h1>{formType === 'login' ? 'Вход' : 'Регистрация'}</h1>
-        
+
         <div className={styles.formSwitcher}>
           <Radio.Group
             value={formType}
@@ -183,8 +182,8 @@ type AuthorizationProps = {
         </div>
 
         {/* Форма авторизации */}
-        <div 
-          style={{ 
+        <div
+          style={{
             display: formType === 'login' ? 'block' : 'none',
             width: '100%',
             maxWidth: '500px'
@@ -193,7 +192,7 @@ type AuthorizationProps = {
           <Form
             form={loginForm}
             name="login"
-            layout="vertical" 
+            layout="vertical"
             initialValues={{ remember: true }}
             onFinish={onFinishLogin}
             onFinishFailed={onFinishFailed}
@@ -203,7 +202,7 @@ type AuthorizationProps = {
               label="Имя пользователя"
               name="username"
               rules={[{ required: true, message: 'Пожалуйста, введите имя пользователя!' }]}
-              className={styles.formItem} 
+              className={styles.formItem}
             >
               <Input className={styles.inputField} />
             </Form.Item>
@@ -217,9 +216,9 @@ type AuthorizationProps = {
               <Input.Password className={styles.inputField} />
             </Form.Item>
 
-            <Form.Item<LoginFieldType> 
-              name="remember" 
-              valuePropName="checked" 
+            <Form.Item<LoginFieldType>
+              name="remember"
+              valuePropName="checked"
               className={styles.formItem}
             >
               <Link to="/forgot_password">Забыли пароль?</Link>
@@ -235,8 +234,8 @@ type AuthorizationProps = {
         </div>
 
         {/* Форма регистрации */}
-        <div 
-          style={{ 
+        <div
+          style={{
             display: formType === 'register' ? 'block' : 'none',
             width: '100%',
             maxWidth: '500px'
@@ -245,7 +244,7 @@ type AuthorizationProps = {
           <Form
             form={registerForm}
             name="register"
-            layout="vertical" 
+            layout="vertical"
             initialValues={{ remember: true }}
             onFinish={onFinishRegister}
             onFinishFailed={onFinishFailed}
@@ -254,8 +253,8 @@ type AuthorizationProps = {
             <Form.Item<RegisterFieldType>
               label="Имя пользователя"
               name="username"
-              rules={[{ 
-                required: true, 
+              rules={[{
+                required: true,
                 message: 'Пожалуйста, введите имя пользователя!',
                 min: 3,
                 max: 50
@@ -269,13 +268,13 @@ type AuthorizationProps = {
               label="Email"
               name="email"
               rules={[
-                { 
-                  required: true, 
-                  message: 'Пожалуйста, введите email!' 
+                {
+                  required: true,
+                  message: 'Пожалуйста, введите email!'
                 },
-                { 
-                  type: 'email', 
-                  message: 'Некорректный email адрес' 
+                {
+                  type: 'email',
+                  message: 'Некорректный email адрес'
                 }
               ]}
             >
@@ -286,13 +285,13 @@ type AuthorizationProps = {
               label="Полное имя"
               name="full_name"
               rules={[
-                { 
-                  required: true, 
-                  message: 'Пожалуйста, введите ваше имя!' 
+                {
+                  required: true,
+                  message: 'Пожалуйста, введите ваше имя!'
                 },
-                { 
-                  min: 2, 
-                  message: 'Имя должно быть не менее 2 символов' 
+                {
+                  min: 2,
+                  message: 'Имя должно быть не менее 2 символов'
                 }
               ]}
             >
@@ -303,13 +302,13 @@ type AuthorizationProps = {
               label="Пароль"
               name="password"
               rules={[
-                { 
-                  required: true, 
-                  message: 'Пожалуйста, введите пароль!' 
+                {
+                  required: true,
+                  message: 'Пожалуйста, введите пароль!'
                 },
-                { 
-                  min: 6, 
-                  message: 'Пароль должен быть не менее 6 символов' 
+                {
+                  min: 6,
+                  message: 'Пароль должен быть не менее 6 символов'
                 }
               ]}
             >
@@ -321,9 +320,9 @@ type AuthorizationProps = {
               name="confirmPassword"
               dependencies={['password']}
               rules={[
-                { 
-                  required: true, 
-                  message: 'Пожалуйста, подтвердите пароль!' 
+                {
+                  required: true,
+                  message: 'Пожалуйста, подтвердите пароль!'
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
@@ -348,6 +347,7 @@ type AuthorizationProps = {
         </div>
       </div>
     </Layout>
-)};
+  )
+};
 
 export default Authorization;

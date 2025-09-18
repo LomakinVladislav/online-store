@@ -11,8 +11,8 @@ type ResetPasswordFieldType = {
 };
 
 type ResetPasswordProps = {
-    isDarkMode: boolean;
-    toggleTheme: () => void;
+  isDarkMode: boolean;
+  toggleTheme: () => void;
 };
 
 const ResetPassword: React.FC<ResetPasswordProps> = ({ isDarkMode, toggleTheme }) => {
@@ -30,10 +30,10 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ isDarkMode, toggleTheme }
         setTokenValid(false);
         return;
       }
-      
+
       try {
         await api.get(`/auth/validate_reset_token?reset_token=${token}`, {
-            skipRedirect: true
+          skipRedirect: true
         });
         setTokenValid(true);
       } catch (error) {
@@ -41,24 +41,24 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ isDarkMode, toggleTheme }
         console.error('Ошибка валидации токена:', error);
       }
     };
-    
+
     validateToken();
   }, [token]);
 
   const onFinish: FormProps<ResetPasswordFieldType>['onFinish'] = async (values) => {
     setIsLoading(true);
-    
+
     try {
       await api.post('/auth/reset_password', {
         token,
         new_password: values.newPassword
-      }, {skipRedirect: true});
-      
+      }, { skipRedirect: true });
+
       messageApi.success({
         content: 'Пароль успешно изменен! Перенаправляем на страницу входа...',
         duration: 2,
       });
-      
+
       setTimeout(() => navigate('/auth'), 2000);
     } catch (error: any) {
       let errorMessage = 'Ошибка при сбросе пароля';
@@ -100,39 +100,38 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ isDarkMode, toggleTheme }
     return (
       <Layout style={{ minHeight: "100vh" }}>
         <div className={styles.logoAndToggleContainer}>
-        <div className={styles.themeToggle}>
-          <Switch
-            checked={isDarkMode}
-            onChange={toggleTheme}
-            checkedChildren="🌙"
-            unCheckedChildren="☀️"
-          />  
+          <div className={styles.themeToggle}>
+            <Switch
+              checked={isDarkMode}
+              onChange={toggleTheme}
+              checkedChildren="🌙"
+              unCheckedChildren="☀️"
+            />
+          </div>
+
+          <div
+            className={`${styles.logoContainer} ${isDarkMode ? styles.logoContainerDark : styles.logoContainerLight
+              }`}
+            onClick={() => navigate('/main')}
+          >
+            <span className={styles.logoText}>ТехникТорг</span>
+          </div>
         </div>
 
-        <div 
-          className={`${styles.logoContainer} ${
-            isDarkMode ? styles.logoContainerDark : styles.logoContainerLight
-          }`}
-          onClick={() => navigate('/main')}
-        >
-          <span className={styles.logoText}>Language Trainer</span>
-        </div>
-      </div>
-        
         <div className={styles.authorizationContainer}>
           <div style={{ width: '100%', maxWidth: '500px', textAlign: 'center' }}>
             <h2 className="text-2xl font-bold mb-4" style={{ color: '#ff4d4f' }}>Недействительный токен</h2>
             <p>Ссылка для сброса пароля недействительна или срок ее действия истек.</p>
-            
-            <Button 
-              type="primary" 
+
+            <Button
+              type="primary"
               onClick={() => navigate('/forgot_password')}
               className={styles.submitButton}
               style={{ marginTop: '20px' }}
             >
               Запросить новую ссылку
             </Button>
-            
+
             <div style={{ marginTop: '16px' }}>
               <Link to="/auth">Вернуться к аутентификации</Link>
             </div>
@@ -151,22 +150,21 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ isDarkMode, toggleTheme }
             onChange={toggleTheme}
             checkedChildren="🌙"
             unCheckedChildren="☀️"
-          />  
+          />
         </div>
 
-        <div 
-          className={`${styles.logoContainer} ${
-            isDarkMode ? styles.logoContainerDark : styles.logoContainerLight
-          }`}
+        <div
+          className={`${styles.logoContainer} ${isDarkMode ? styles.logoContainerDark : styles.logoContainerLight
+            }`}
           onClick={() => navigate('/main')}
         >
-          <span className={styles.logoText}>Language Trainer</span>
+          <span className={styles.logoText}>ТехникТорг</span>
         </div>
       </div>
-      
+
       <div className={styles.authorizationContainer}>
         <h1>Сброс пароля</h1>
-        
+
         <div style={{ width: '100%', maxWidth: '500px' }}>
           {contextHolder}
           <Form
@@ -181,13 +179,13 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ isDarkMode, toggleTheme }
               label="Новый пароль"
               name="newPassword"
               rules={[
-                { 
-                  required: true, 
-                  message: 'Пожалуйста, введите новый пароль!' 
+                {
+                  required: true,
+                  message: 'Пожалуйста, введите новый пароль!'
                 },
-                { 
-                  min: 6, 
-                  message: 'Пароль должен быть не менее 6 символов' 
+                {
+                  min: 6,
+                  message: 'Пароль должен быть не менее 6 символов'
                 }
               ]}
               className={styles.formItem}
@@ -200,9 +198,9 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ isDarkMode, toggleTheme }
               name="confirmPassword"
               dependencies={['newPassword']}
               rules={[
-                { 
-                  required: true, 
-                  message: 'Пожалуйста, подтвердите пароль!' 
+                {
+                  required: true,
+                  message: 'Пожалуйста, подтвердите пароль!'
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
@@ -219,9 +217,9 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ isDarkMode, toggleTheme }
             </Form.Item>
 
             <Form.Item className={styles.formItem}>
-              <Button 
-                type="primary" 
-                htmlType="submit" 
+              <Button
+                type="primary"
+                htmlType="submit"
                 className={styles.submitButton}
                 loading={isLoading}
               >
